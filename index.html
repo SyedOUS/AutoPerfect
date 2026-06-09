@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AutoPerfect — Script Documentation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --p700: #5b21b6;
+    --p600: #7c3aed;
+    --p500: #8b5cf6;
+    --p400: #a78bfa;
+    --p300: #c4b5fd;
+    --p200: #ddd6fe;
+    --p100: #ede9fe;
+    --p50:  #f5f3ff;
+    --accent: #7c3aed;
+
+    --bg:       #ffffff;
+    --bg2:      #fafafa;
+    --bg3:      #f5f3ff;
+    --surface:  #f8f7ff;
+    --card:     #ffffff;
+    --border:   #e5e7eb;
+    --border-p: #c4b5fd;
+
+    --text:       #111827;
+    --text-muted: #4b5563;
+    --text-dim:   #9ca3af;
+
+    --green:  #059669;
+    --yellow: #d97706;
+    --blue:   #2563eb;
+    --red:    #dc2626;
+
+    --sidebar-bg: #faf9ff;
+    --sidebar-border: #ede9fe;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 260px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--sidebar-border);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .sidebar-brand {
+    padding: 26px 22px 18px;
+    border-bottom: 1px solid var(--sidebar-border);
+  }
+
+  .sidebar-brand .logo-mark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+  }
+
+  .sidebar-brand .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--p600), var(--p400));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+  }
+
+  .sidebar-brand h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  .sidebar-brand p {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    margin-top: 2px;
+    padding-left: 46px;
+  }
+
+  .sidebar-nav { padding: 14px 10px; flex: 1; }
+
+  .nav-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    padding: 0 10px;
+    margin-bottom: 6px;
+    margin-top: 14px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 13.5px;
+    font-weight: 500;
+    border: 1px solid transparent;
+  }
+
+  .nav-item:hover {
+    background: var(--p100);
+    color: var(--p600);
+  }
+
+  .nav-item.active {
+    background: var(--p100);
+    color: var(--p600);
+    border-color: var(--p300);
+    font-weight: 600;
+  }
+
+  .nav-item .nav-icon {
+    width: 26px; height: 26px;
+    background: var(--p50);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+
+  .nav-item.active .nav-icon { background: var(--p200); }
+
+  .sidebar-footer {
+    padding: 14px;
+    border-top: 1px solid var(--sidebar-border);
+  }
+
+  .download-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 11px 16px;
+    background: linear-gradient(135deg, var(--p600), var(--p500));
+    color: #fff;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 12px rgba(124, 58, 237, 0.35);
+    letter-spacing: 0.1px;
+  }
+
+  .download-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.45);
+    filter: brightness(1.06);
+  }
+
+  /* ─── PROGRESS BAR ─── */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 260px; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--p600), var(--p400));
+    z-index: 200;
+    width: 0%;
+    transition: width 0.1s;
+  }
+
+  /* ─── MAIN ─── */
+  .main { margin-left: 260px; min-height: 100vh; }
+
+  .page { display: none; }
+  .page.active { display: block; animation: fadeIn 0.25s ease; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 60px 60px 50px;
+    background: linear-gradient(135deg, var(--p50) 0%, #fff 60%);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: -60px; top: -60px;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(167,139,250,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--p600);
+    background: var(--p100);
+    border: 1px solid var(--p300);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+  }
+
+  .hero h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 38px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -1.2px;
+    color: var(--text);
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h2 .accent { color: var(--p600); }
+
+  .hero-desc {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 540px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ─── CONTENT ─── */
+  .content { padding: 44px 60px 80px; }
+
+  /* ─── SECTION LABEL ─── */
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--p600);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ─── TAGS ─── */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 28px;
+  }
+
+  .tag {
+    font-size: 11.5px;
+    font-weight: 500;
+    padding: 4px 11px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .tag-purple { color: var(--p700);  background: var(--p100);                  border-color: var(--p300); }
+  .tag-green  { color: var(--green); background: #ecfdf5;                       border-color: #6ee7b7; }
+  .tag-blue   { color: var(--blue);  background: #eff6ff;                       border-color: #93c5fd; }
+  .tag-yellow { color: var(--yellow);background: #fffbeb;                       border-color: #fcd34d; }
+  .tag-red    { color: var(--red);   background: #fef2f2;                       border-color: #fca5a5; }
+
+  /* ─── INFO BOX ─── */
+  .info-box {
+    background: var(--p50);
+    border: 1px solid var(--p200);
+    border-left: 3px solid var(--p500);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 28px;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .info-box strong { color: var(--p700); }
+
+  /* ─── STEPS ─── */
+  .steps {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 40px;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  .step {
+    display: flex;
+    gap: 18px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+    transition: background 0.15s;
+  }
+
+  .step:last-child { border-bottom: none; }
+  .step:hover { background: var(--p50); }
+
+  .step-num {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    background: linear-gradient(135deg, var(--p600), var(--p400));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    flex-shrink: 0;
+    margin-top: 2px;
+    box-shadow: 0 1px 5px rgba(124,58,237,0.3);
+  }
+
+  .step-body h4 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .step-body p {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  /* ─── FEATURE GRID ─── */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+
+  .feature-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .feature-card:hover {
+    border-color: var(--p300);
+    box-shadow: 0 4px 16px rgba(124,58,237,0.1);
+    transform: translateY(-1px);
+  }
+
+  .card-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 19px;
+    margin-bottom: 14px;
+  }
+
+  .icon-purple { background: var(--p100); }
+  .icon-green  { background: #d1fae5; }
+  .icon-blue   { background: #dbeafe; }
+  .icon-yellow { background: #fef3c7; }
+  .icon-red    { background: #fee2e2; }
+  .icon-pink   { background: #fce7f3; }
+
+  .feature-card h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .feature-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  /* ─── TABLE ─── */
+  .diff-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 36px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .diff-table th {
+    background: var(--bg2);
+    padding: 12px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--p700);
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .diff-table td {
+    padding: 13px 16px;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+    background: #fff;
+  }
+
+  .diff-table tr:last-child td { border-bottom: none; }
+  .diff-table tr:hover td { background: var(--p50); }
+  .diff-table td:first-child { color: var(--text); font-weight: 500; }
+
+  /* ─── CHECK LIST ─── */
+  .check-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .check-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  .check-list li::before {
+    content: '✓';
+    color: var(--p600);
+    font-weight: 700;
+    font-size: 12px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    background: var(--p100);
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ─── MONO ─── */
+  .mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--p100);
+    color: var(--p700);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--p200);
+  }
+
+  /* ─── HOME PAGE ─── */
+  .home-hero {
+    padding: 72px 60px 56px;
+    background: linear-gradient(135deg, var(--p50) 0%, #fff 55%);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .home-hero::before {
+    content: '';
+    position: absolute;
+    right: -100px; bottom: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(196,181,253,0.2) 0%, transparent 65%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .home-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--p100);
+    border: 1px solid var(--p300);
+    color: var(--p700);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 5px 13px;
+    border-radius: 30px;
+    margin-bottom: 22px;
+    position: relative; z-index: 1;
+  }
+
+  .home-tag .dot {
+    width: 6px; height: 6px;
+    background: var(--p500);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .home-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 58px;
+    font-weight: 700;
+    line-height: 1.0;
+    letter-spacing: -2.5px;
+    color: var(--text);
+    margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+
+  .home-title span { color: var(--p600); }
+
+  .home-subtitle {
+    font-size: 16px;
+    color: var(--text-muted);
+    line-height: 1.75;
+    max-width: 560px;
+    margin-bottom: 36px;
+    position: relative; z-index: 1;
+  }
+
+  .home-scripts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 12px;
+    position: relative; z-index: 1;
+  }
+
+  .home-script-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  .home-script-card:hover {
+    border-color: var(--p300);
+    box-shadow: 0 6px 20px rgba(124,58,237,0.12);
+    transform: translateY(-2px);
+  }
+
+  .home-script-card .card-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .home-script-card .card-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--p600);
+    background: var(--p100);
+    border: 1px solid var(--p200);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .home-script-card h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .home-script-card p {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .home-script-card .arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--p600);
+    font-weight: 600;
+    margin-top: 12px;
+  }
+
+  /* ─── QC ISSUE BADGES ─── */
+  .issue-badges {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 36px;
+  }
+
+  .issue-badge {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 14px;
+    text-align: center;
+    transition: all 0.15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+
+  .issue-badge:hover { border-color: var(--p300); }
+  .issue-badge .ib-icon { font-size: 24px; margin-bottom: 8px; }
+  .issue-badge .ib-name { font-size: 12.5px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .issue-badge .ib-desc { font-size: 11.5px; color: var(--text-dim); line-height: 1.5; }
+
+  /* ─── GITHUB CALLOUT ─── */
+  .github-callout {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+  }
+
+  .github-callout h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #166534;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .github-callout ol {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .github-callout ol li {
+    font-size: 13.5px;
+    color: #14532d;
+    line-height: 1.7;
+  }
+
+  .github-callout .path-pill {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-weight: 500;
+  }
+
+  .github-callout .note {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: #dcfce7;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #166534;
+    line-height: 1.65;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .content, .hero, .home-hero { padding-left: 20px; padding-right: 20px; }
+    .home-title { font-size: 36px; }
+    .hero h2 { font-size: 26px; }
+    .feature-grid, .issue-badges, .home-scripts-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo-mark">
+      <div class="logo-icon">⚡</div>
+      <h1>AutoPerfect</h1>
+    </div>
+    <p>Illustrator Script Suite</p>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="nav-label">Overview</div>
+    <a class="nav-item active" onclick="showPage('home', this)">
+      <div class="nav-icon">🏠</div> Home
+    </a>
+
+    <div class="nav-label">Scripts</div>
+    <a class="nav-item" onclick="showPage('brix', this)">
+      <div class="nav-icon">🎨</div> Smart Renditions
+    </a>
+    <a class="nav-item" onclick="showPage('magicfix', this)">
+      <div class="nav-icon">✨</div> Magic Fix
+    </a>
+    <a class="nav-item" onclick="showPage('qc', this)">
+      <div class="nav-icon">🔍</div> QC Report
+    </a>
+    <a class="nav-item" onclick="showPage('text', this)">
+      <div class="nav-icon">🔤</div> Text Cleanup
+    </a>
+    <a class="nav-item" onclick="showPage('export', this)">
+      <div class="nav-icon">📤</div> Export PNG
+    </a>
+
+    <div class="nav-label">Resources</div>
+    <a class="nav-item" onclick="showPage('github', this)">
+      <div class="nav-icon">📁</div> GitHub Setup
+    </a>
+  </div>
+
+  <div class="sidebar-footer">
+    <a href="AutoPerfect_2_0.zip" download="AutoPerfect_2_0.zip" class="download-btn">
+      ⬇ &nbsp;Download All Scripts
+    </a>
+  </div>
+</nav>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<main class="main">
+
+  <!-- ══════ HOME ══════ -->
+  <div class="page active" id="page-home">
+    <div class="home-hero">
+      <div class="home-tag"><div class="dot"></div> Adobe Illustrator · ExtendScript</div>
+      <h1 class="home-title">Auto<span>Perfect</span></h1>
+      <p class="home-subtitle">Five precision scripts that automate cleanup, scaling, QC reporting, text normalization, and PNG export inside Adobe Illustrator — built for production-speed workflows.</p>
+      <div class="tags" style="margin-bottom:32px">
+        <span class="tag tag-purple">Adobe Illustrator</span>
+        <span class="tag tag-blue">ExtendScript JSX</span>
+        <span class="tag tag-green">Production Ready</span>
+        <span class="tag tag-yellow">v2.0</span>
+      </div>
+      <div class="home-scripts-grid">
+        <div class="home-script-card" onclick="showPage('brix', getNav('brix'))">
+          <div class="card-top"><span class="card-num">01</span><h3>Smart Renditions</h3></div>
+          <p>Generates SM / L / XL artboard renditions scaled from the master MD artboard.</p>
+          <div class="arrow">View details →</div>
+        </div>
+        <div class="home-script-card" onclick="showPage('magicfix', getNav('magicfix'))">
+          <div class="card-top"><span class="card-num">02</span><h3>Magic Fix</h3></div>
+          <p>Full-document cleanup — fonts, strokes, spacing, artboard cropping, empty layer removal.</p>
+          <div class="arrow">View details →</div>
+        </div>
+        <div class="home-script-card" onclick="showPage('qc', getNav('qc'))">
+          <div class="card-top"><span class="card-num">03</span><h3>QC Report</h3></div>
+          <p>Scans the document and generates a detailed HTML quality-check report.</p>
+          <div class="arrow">View details →</div>
+        </div>
+        <div class="home-script-card" onclick="showPage('text', getNav('text'))">
+          <div class="card-top"><span class="card-num">04</span><h3>Text Cleanup</h3></div>
+          <p>Normalizes tracking, kerning, scale, baseline and rotation across all text frames.</p>
+          <div class="arrow">View details →</div>
+        </div>
+        <div class="home-script-card" onclick="showPage('export', getNav('export'))">
+          <div class="card-top"><span class="card-num">05</span><h3>Export PNG</h3></div>
+          <p>Exports all artboards as 300 DPI PNG24 files after cleaning empty layers and boards.</p>
+          <div class="arrow">View details →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ SCRIPT 01 — SMART RENDITIONS ══════ -->
+  <div class="page" id="page-brix">
+    <div class="hero">
+      <div class="hero-eyebrow">⚡ Script 01</div>
+      <h2>Brix <span class="accent">Smart Renditions</span></h2>
+      <p class="hero-desc">Automates the creation of multi-size renditions (SM, MD, L, XL) from a single master MD artboard — scaled, cleaned, and cropped in one run.</p>
+    </div>
+    <div class="content">
+      <div class="tags">
+        <span class="tag tag-purple">brixSmartRenditions.jsx</span>
+        <span class="tag tag-green">Non-destructive</span>
+        <span class="tag tag-blue">Auto-scale</span>
+        <span class="tag tag-yellow">4 Artboards</span>
+      </div>
+
+      <div class="info-box">
+        <strong>In one sentence:</strong> Duplicates your MD master design to SM, L, and XL artboards at the correct proportional scale — with font rounding, stroke snapping, and tight artboard cropping applied automatically.
+      </div>
+
+      <div class="section-label">How it works</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <h4>Setup & Validation</h4>
+            <p>Checks that all four artboards named <span class="mono">SM</span>, <span class="mono">MD</span>, <span class="mono">L</span>, <span class="mono">XL</span> exist. Any missing layers are created automatically before anything else runs.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <h4>Empty Text Frame Cleanup</h4>
+            <p>Scans every text frame across the entire document and removes any that contain only whitespace, non-breaking spaces, or are completely blank.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <h4>MD Master Artboard Cleanup</h4>
+            <p>Removes double-spaces and trims leading/trailing spaces character-by-character. Rounds all font sizes to whole numbers enforcing a <strong>10pt minimum</strong>. Snaps all stroke widths to clean values.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <div class="step-body">
+            <h4>Move & Crop MD</h4>
+            <p>Shifts all content flush to the top of the MD artboard, then trims the artboard height to exactly fit the content — no whitespace below.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">05</div>
+          <div class="step-body">
+            <h4>Generate SM / L / XL Renditions</h4>
+            <p>Duplicates all MD content into each target layer and scales it proportionally based on the ratio of each artboard's width to MD's width. Fonts are re-rounded with per-size minimums (SM: 8pt, L/XL: 12pt). Strokes are re-snapped.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">06</div>
+          <div class="step-body">
+            <h4>Align & Crop Each Rendition</h4>
+            <p>Centers content horizontally, aligns to the top edge, and crops each artboard height to fit the scaled content tightly — ready for export.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">Font size minimums</div>
+      <table class="diff-table">
+        <thead><tr><th>Artboard</th><th>Minimum Font Size</th></tr></thead>
+        <tbody>
+          <tr><td>SM</td><td>8 pt</td></tr>
+          <tr><td>MD (master)</td><td>10 pt</td></tr>
+          <tr><td>L</td><td>12 pt</td></tr>
+          <tr><td>XL</td><td>12 pt</td></tr>
+        </tbody>
+      </table>
+
+      <div class="section-label">Key capabilities</div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="card-icon icon-purple">🎯</div>
+          <h3>Proportional Scaling</h3>
+          <p>Uses each artboard's width-to-MD-width ratio to scale content correctly without distortion.</p>
+        </div>
+        <div class="feature-card">
+          <div class="card-icon icon-green">🔢</div>
+          <h3>Font Rounding</h3>
+          <p>Rounds every character's font size to a whole number and enforces per-artboard minimums.</p>
+        </div>
+        <div class="feature-card">
+          <div class="card-icon icon-blue">✏️</div>
+          <h3>Stroke Snapping</h3>
+          <p>Cleans sub-pixel stroke widths to predictable values: 0.25, 0.5, 0.75, or whole integers.</p>
+        </div>
+        <div class="feature-card">
+          <div class="card-icon icon-yellow">✂️</div>
+          <h3>Auto Artboard Crop</h3>
+          <p>Trims artboard height on all four boards to the exact content boundary — ready for export.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ SCRIPT 02 — MAGIC FIX ══════ -->
+  <div class="page" id="page-magicfix">
+    <div class="hero">
+      <div class="hero-eyebrow">✨ Script 02</div>
+      <h2>Magic <span class="accent">Fix</span></h2>
+      <p class="hero-desc">A comprehensive in-place cleanup script that fixes every artboard in the document — fonts, strokes, spacing, content alignment, and empty layer removal — in a single run.</p>
+    </div>
+    <div class="content">
+      <div class="tags">
+        <span class="tag tag-purple">MagicFix.jsx</span>
+        <span class="tag tag-green">All Artboards</span>
+        <span class="tag tag-blue">In-place Cleanup</span>
+        <span class="tag tag-red">No Duplication</span>
+      </div>
+
+      <div class="info-box">
+        <strong>Key difference from Smart Renditions:</strong> Magic Fix cleans and fixes all existing artboards in place. It does <em>not</em> duplicate or scale content — it is a cleanup-only tool designed to be run on any document at any stage.
+      </div>
+
+      <div class="section-label">Step-by-step process</div>
+      <div class="steps">
+        <div class="step"><div class="step-num">01</div><div class="step-body"><h4>Enable Scale Corners</h4><p>Turns on Illustrator's Scale Corners preference so rounded corners behave correctly on any resized items.</p></div></div>
+        <div class="step"><div class="step-num">02</div><div class="step-body"><h4>Global Empty Text Frame Removal</h4><p>Scans all text frames across the document. Deletes blank or whitespace-only ones. Respects locked and hidden layers.</p></div></div>
+        <div class="step"><div class="step-num">03</div><div class="step-body"><h4>Text Spacing Cleanup (Per Artboard)</h4><p>Removes consecutive double-spaces and trims leading/trailing spaces character-by-character, preserving all mixed font style runs intact.</p></div></div>
+        <div class="step"><div class="step-num">04</div><div class="step-body"><h4>Font Size Enforcement (Per Artboard)</h4><p>Rounds font sizes with a custom rule: fractions below 0.6 round down, 0.6 and above round up. Enforces minimums per artboard name. Only writes when a change is needed.</p></div></div>
+        <div class="step"><div class="step-num">05</div><div class="step-body"><h4>Stroke Width Snapping (Per Artboard)</h4><p>Snaps all stroke widths to 0.25, 0.5, 0.75, or the nearest whole number.</p></div></div>
+        <div class="step"><div class="step-num">06</div><div class="step-body"><h4>Second Empty Frame Pass</h4><p>Re-checks for text frames that became empty after the space cleanup and removes them.</p></div></div>
+        <div class="step"><div class="step-num">07</div><div class="step-body"><h4>Move Content to Top & Crop</h4><p>Shifts all content flush to the artboard top, then resizes the artboard bottom to fit the content height exactly.</p></div></div>
+        <div class="step"><div class="step-num">08</div><div class="step-body"><h4>Remove Empty Layers</h4><p>Recursively checks every layer and removes completely empty ones. Reports their names in a final alert.</p></div></div>
+      </div>
+
+      <div class="section-label">Custom rounding logic</div>
+      <table class="diff-table">
+        <thead><tr><th>Fraction</th><th>Rule</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>Below 0.6</td><td>Round down (floor)</td><td>11.4 → 11</td></tr>
+          <tr><td>0.6 or above</td><td>Round up (ceil)</td><td>11.7 → 12</td></tr>
+          <tr><td>Whole number</td><td>No change</td><td>12.0 → 12</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ══════ SCRIPT 03 — QC REPORT ══════ -->
+  <div class="page" id="page-qc">
+    <div class="hero">
+      <div class="hero-eyebrow">🔍 Script 03</div>
+      <h2>Brix <span class="accent">QC Report</span></h2>
+      <p class="hero-desc">Scans the entire Illustrator document and generates a detailed, styled HTML quality-check report — identifying font, spacing, stroke, swatch, and bounds issues per artboard.</p>
+    </div>
+    <div class="content">
+      <div class="tags">
+        <span class="tag tag-purple">brix_QC_Unlocked.jsx</span>
+        <span class="tag tag-blue">HTML Report</span>
+        <span class="tag tag-green">Saves to Disk</span>
+        <span class="tag tag-yellow">Read-only scan</span>
+      </div>
+
+      <div class="info-box">
+        <strong>Output:</strong> Saves a <span class="mono">DocumentName_QC_Report.html</span> next to the <span class="mono">.ai</span> file and opens it in the browser automatically. Makes <strong>no changes</strong> to the Illustrator document.
+      </div>
+
+      <div class="section-label">Issues detected</div>
+      <div class="issue-badges">
+        <div class="issue-badge"><div class="ib-icon">🔢</div><div class="ib-name">Decimal Font Sizes</div><div class="ib-desc">Font sizes not rounded to whole numbers</div></div>
+        <div class="issue-badge"><div class="ib-icon">　　</div><div class="ib-name">Double Spaces</div><div class="ib-desc">Extra spaces in text with position markers</div></div>
+        <div class="issue-badge"><div class="ib-icon">🔡</div><div class="ib-name">Small Fonts</div><div class="ib-desc">Any character below 8pt minimum</div></div>
+        <div class="issue-badge"><div class="ib-icon">✏️</div><div class="ib-name">Bad Stroke Widths</div><div class="ib-desc">Strokes not snapped to valid values</div></div>
+        <div class="issue-badge"><div class="ib-icon">📐</div><div class="ib-name">Outside Artboard</div><div class="ib-desc">Objects bleeding beyond artboard bounds</div></div>
+        <div class="issue-badge"><div class="ib-icon">🎨</div><div class="ib-name">Bad Swatch Names</div><div class="ib-desc">Auto-named swatches like "New Swatch"</div></div>
+      </div>
+
+      <div class="section-label">How it works</div>
+      <div class="steps">
+        <div class="step"><div class="step-num">01</div><div class="step-body"><h4>QC User Cache</h4><p>On first run, prompts for the reviewer's name and saves it to <span class="mono">userData/Illustrator_QC_User.txt</span>. Subsequent runs load it automatically.</p></div></div>
+        <div class="step"><div class="step-num">02</div><div class="step-body"><h4>Per-Artboard Scanning</h4><p>For each artboard, collects all text frames and path items. Checks every character's font size and spacing, and every stroke's width against the valid values list.</p></div></div>
+        <div class="step"><div class="step-num">03</div><div class="step-body"><h4>Bounds & Overflow Detection</h4><p>Uses a normalized overlap-area algorithm to assign each item to its artboard, then flags any item whose visible bounds extend beyond the artboard by more than 0.0001pt.</p></div></div>
+        <div class="step"><div class="step-num">04</div><div class="step-body"><h4>Swatch Audit</h4><p>Checks every swatch against known bad-name patterns: "New Swatch", CMYK strings like "C=0 M=0…", RGB strings, hex values, and unnamed defaults.</p></div></div>
+        <div class="step"><div class="step-num">05</div><div class="step-body"><h4>HTML Report Generation</h4><p>Builds a complete styled HTML report with a summary dashboard, per-artboard sections with badge counts, and highlights the exact word containing a bad font size in context.</p></div></div>
+      </div>
+
+      <div class="section-label">Report structure</div>
+      <div class="feature-grid">
+        <div class="feature-card"><div class="card-icon icon-purple">📊</div><h3>Summary Dashboard</h3><p>Total artboards, artboards with issues, and total swatch problems at a glance.</p></div>
+        <div class="feature-card"><div class="card-icon icon-blue">🗂️</div><h3>Per-Artboard Sections</h3><p>Each artboard with issues gets its own section with badge counts for all 5 issue types.</p></div>
+        <div class="feature-card"><div class="card-icon icon-green">🎯</div><h3>Contextual Highlights</h3><p>Double-space positions shown with character index. Bad font words highlighted in red within their full sentence.</p></div>
+        <div class="feature-card"><div class="card-icon icon-yellow">🧾</div><h3>Swatch Issues Section</h3><p>Lists all globally unnamed or auto-named swatches that need proper naming before final handoff.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ SCRIPT 04 — TEXT CLEANUP ══════ -->
+  <div class="page" id="page-text">
+    <div class="hero">
+      <div class="hero-eyebrow">🔤 Script 04</div>
+      <h2>Text <span class="accent">Normalization</span></h2>
+      <p class="hero-desc">Resets all text attributes across every text frame in the document — tracking, kerning, scale, baseline shift, and character rotation — via a quick choice dialog.</p>
+    </div>
+    <div class="content">
+      <div class="tags">
+        <span class="tag tag-purple">text_cleanup.jsx</span>
+        <span class="tag tag-green">Quick Dialog</span>
+        <span class="tag tag-blue">Style Preservation</span>
+        <span class="tag tag-yellow">Character-level</span>
+      </div>
+
+      <div class="info-box">
+        <strong>How to use:</strong> Run the script — a dialog appears asking you to choose a tracking value. Click your option and the script processes all text frames and shows a summary alert.
+      </div>
+
+      <div class="section-label">Tracking options</div>
+      <table class="diff-table">
+        <thead><tr><th>Button</th><th>Tracking Value</th><th>Use Case</th></tr></thead>
+        <tbody>
+          <tr><td>Set Tracking 0</td><td>0</td><td>Standard reset to default</td></tr>
+          <tr><td>Set Tracking -10</td><td>-10</td><td>Slightly tighter for medium sizes</td></tr>
+          <tr><td>Set Tracking -25</td><td>-25</td><td>Tight tracking for large display text</td></tr>
+        </tbody>
+      </table>
+
+      <div class="section-label">What gets reset</div>
+      <div class="feature-grid">
+        <div class="feature-card"><div class="card-icon icon-purple">↔️</div><h3>Tracking</h3><p>Sets letter-spacing to your chosen value (0, -10, or -25) on every character individually.</p></div>
+        <div class="feature-card"><div class="card-icon icon-green">📏</div><h3>Scale Reset</h3><p>Both horizontal and vertical character scale are restored to exactly <strong>100%</strong>.</p></div>
+        <div class="feature-card"><div class="card-icon icon-blue">⬆️</div><h3>Baseline Shift</h3><p>Any baseline offset is zeroed out across all characters.</p></div>
+        <div class="feature-card"><div class="card-icon icon-yellow">🔄</div><h3>Character Rotation</h3><p>Individual character rotation is reset to 0° — removes any per-character tilt applied manually.</p></div>
+        <div class="feature-card"><div class="card-icon icon-pink">🔡</div><h3>Kerning → Auto</h3><p>Forces kerning method to <span class="mono">AutoKernType.AUTO</span>, removing all manual or optical overrides.</p></div>
+      </div>
+
+      <div class="section-label">Important notes</div>
+      <ul class="check-list">
+        <li>Processes every text frame on every layer — no per-artboard or per-layer filter.</li>
+        <li>Font size, font family, color, and weight are <strong>not</strong> touched — only the 5 attributes listed above.</li>
+        <li>Mixed-style runs are preserved because the script operates character-by-character.</li>
+        <li>Performs two redraws before and after to ensure Illustrator commits all changes visually.</li>
+        <li>Executes an undo step on load as a hard state reset to avoid Illustrator state conflicts.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════ SCRIPT 05 — EXPORT PNG ══════ -->
+  <div class="page" id="page-export">
+    <div class="hero">
+      <div class="hero-eyebrow">📤 Script 05</div>
+      <h2>Export <span class="accent">PNG</span></h2>
+      <p class="hero-desc">Cleans up empty layers and artboards, then exports every remaining artboard as a transparent 300 DPI PNG24 file — named, saved, and done in one click.</p>
+    </div>
+    <div class="content">
+      <div class="tags">
+        <span class="tag tag-purple">exportPng.jsx</span>
+        <span class="tag tag-green">300 DPI</span>
+        <span class="tag tag-blue">PNG24 Transparent</span>
+        <span class="tag tag-yellow">Auto-named</span>
+      </div>
+
+      <div class="info-box">
+        <strong>Requirement:</strong> The document must be saved before running — the script uses the document's save location as the export destination.
+      </div>
+
+      <div class="section-label">Export process</div>
+      <div class="steps">
+        <div class="step"><div class="step-num">01</div><div class="step-body"><h4>Confirm Dialog</h4><p>Asks "Deleting empty Layers and Artboards. Confirm?" before making any changes. Cancelling exits cleanly.</p></div></div>
+        <div class="step"><div class="step-num">02</div><div class="step-body"><h4>Delete Empty Layers</h4><p>Recursively removes all layers and sub-layers with no page items. Skips locked or hidden layers.</p></div></div>
+        <div class="step"><div class="step-num">03</div><div class="step-body"><h4>Delete Empty Artboards</h4><p>Checks each artboard for visible content overlap. Any artboard with no overlapping items is removed.</p></div></div>
+        <div class="step"><div class="step-num">04</div><div class="step-body"><h4>Export Each Artboard as PNG</h4><p>Sets the active artboard, constructs the filename, and exports using PNG24 with artboard clipping, transparency, and anti-aliasing.</p></div></div>
+        <div class="step"><div class="step-num">05</div><div class="step-body"><h4>File Naming</h4><p>Single artboard: <span class="mono">DocumentName.png</span>. Multiple artboards: <span class="mono">DocumentName ArtboardName.png</span>. Default artboard names containing "Artboard" are omitted.</p></div></div>
+        <div class="step"><div class="step-num">06</div><div class="step-body"><h4>Save & Report</h4><p>Saves the Illustrator document after export. Shows a completion alert or lists any artboards that failed.</p></div></div>
+      </div>
+
+      <div class="section-label">Export settings</div>
+      <table class="diff-table">
+        <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Format</td><td>PNG24</td></tr>
+          <tr><td>Resolution</td><td>300 DPI (417% scale from 72 DPI)</td></tr>
+          <tr><td>Transparency</td><td>Enabled</td></tr>
+          <tr><td>Anti-aliasing</td><td>Enabled</td></tr>
+          <tr><td>Artboard clipping</td><td>Enabled</td></tr>
+          <tr><td>Save location</td><td>Same folder as the .ai document</td></tr>
+        </tbody>
+      </table>
+
+      <div class="info-box">
+        <strong>Technical note:</strong> This script uses <strong>BridgeTalk</strong> to send the export payload back to Illustrator as a separate invocation — this avoids ExtendScript re-entrancy issues that can cause silent failures when exporting multiple artboards.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ GITHUB SETUP ══════ -->
+  <div class="page" id="page-github">
+    <div class="hero">
+      <div class="hero-eyebrow">📁 Hosting Guide</div>
+      <h2>GitHub <span class="accent">Repository Setup</span></h2>
+      <p class="hero-desc">How to host this documentation on GitHub Pages and ensure the download button works correctly for every visitor.</p>
+    </div>
+    <div class="content">
+
+      <div class="section-label">Repository file structure</div>
+      <div class="info-box" style="margin-bottom:28px">
+        <strong>Place the ZIP file in the same folder as this HTML file.</strong> The download button uses a relative path — <span class="mono">AutoPerfect_2_0.zip</span> — so both files must live in the same directory.
+      </div>
+
+      <table class="diff-table" style="margin-bottom:36px">
+        <thead><tr><th>File</th><th>Location in repo</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><span class="mono">index.html</span> <em>(rename this file)</em></td><td><span class="mono">/</span> (root)</td><td>Rename <span class="mono">AutoPerfect_Docs_Light.html</span> to <span class="mono">index.html</span></td></tr>
+          <tr><td><span class="mono">AutoPerfect_2_0.zip</span></td><td><span class="mono">/</span> (root, same folder)</td><td>Must be in the same directory as index.html</td></tr>
+        </tbody>
+      </table>
+
+      <div class="section-label">Step-by-step GitHub Pages setup</div>
+
+      <div class="github-callout">
+        <h3>📋 Complete Setup Instructions</h3>
+        <ol>
+          <li><strong>Create a new GitHub repository</strong> — go to github.com → New Repository. Name it anything, e.g. <span class="path-pill">autoperfect-docs</span>. Set it to Public.</li>
+          <li><strong>Rename this HTML file to <span class="path-pill">index.html</span></strong> — GitHub Pages serves <span class="path-pill">index.html</span> as the homepage automatically.</li>
+          <li><strong>Upload both files to the repository root</strong> — click <em>Add file → Upload files</em> and drag in:
+            <ul style="margin-top:8px;margin-left:20px;display:flex;flex-direction:column;gap:4px">
+              <li style="font-size:13.5px;color:#14532d">📄 <span class="path-pill">index.html</span></li>
+              <li style="font-size:13.5px;color:#14532d">📦 <span class="path-pill">AutoPerfect_2_0.zip</span></li>
+            </ul>
+          </li>
+          <li><strong>Enable GitHub Pages</strong> — go to your repo → <em>Settings → Pages</em> → under Source, select <em>Deploy from a branch</em> → choose <span class="path-pill">main</span> branch → folder <span class="path-pill">/ (root)</span> → click Save.</li>
+          <li><strong>Wait ~1 minute</strong> then visit <span class="path-pill">https://yourusername.github.io/autoperfect-docs/</span> — your site is live.</li>
+          <li><strong>Test the download button</strong> — click "Download All Scripts" in the sidebar. The browser should download <span class="path-pill">AutoPerfect_2_0.zip</span> directly.</li>
+        </ol>
+        <div class="note">
+          ✅ <strong>Why this works:</strong> The download button uses <span class="path-pill">href="AutoPerfect_2_0.zip" download="AutoPerfect_2_0.zip"</span> — a relative path. Since both files sit in the same root directory, GitHub Pages resolves the ZIP correctly and the <span class="path-pill">download</span> attribute forces the browser to download rather than open it.
+        </div>
+      </div>
+
+      <div class="section-label">What NOT to do</div>
+      <ul class="check-list" style="margin-bottom:32px">
+        <li>Do not put the ZIP in a subfolder like <span class="mono">/assets/</span> unless you update the href in the download button to match.</li>
+        <li>Do not use a private repository — GitHub Pages requires a public repo on the free plan.</li>
+        <li>Do not rename the ZIP file without also updating the <span class="mono">href</span> and <span class="mono">download</span> attributes in the sidebar footer button.</li>
+        <li>Do not use GitHub's web editor to rename index.html — it's safer to rename it locally first then upload.</li>
+      </ul>
+
+      <div class="section-label">Updating scripts later</div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="card-icon icon-green">🔄</div>
+          <h3>Replace the ZIP</h3>
+          <p>Upload a new <span class="mono">AutoPerfect_2_0.zip</span> to the repo root. GitHub Pages serves the latest commit — no URL changes needed.</p>
+        </div>
+        <div class="feature-card">
+          <div class="card-icon icon-blue">📝</div>
+          <h3>Update the HTML</h3>
+          <p>Edit <span class="mono">index.html</span> in GitHub's web editor or push an updated file. Changes go live in ~30 seconds.</p>
+        </div>
+        <div class="feature-card">
+          <div class="card-icon icon-purple">🔗</div>
+          <h3>Share the Link</h3>
+          <p>Your permanent URL is <span class="mono">https://yourusername.github.io/repo-name/</span> — share it with your team directly.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  var pageMap = { brix:'brix', magicfix:'magicfix', qc:'qc', text:'text', export:'export', github:'github', home:'home' };
+
+  function getNav(id) {
+    var items = document.querySelectorAll('.nav-item');
+    for (var i = 0; i < items.length; i++) {
+      var onclick = items[i].getAttribute('onclick') || '';
+      if (onclick.indexOf("'" + id + "'") !== -1) return items[i];
+    }
+    return null;
+  }
+
+  function showPage(id, navEl) {
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
+    var pg = document.getElementById('page-' + id);
+    if (pg) pg.classList.add('active');
+    if (navEl) navEl.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  window.addEventListener('scroll', function() {
+    var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+    var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    var pct = height > 0 ? (winScroll / height) * 100 : 0;
+    document.getElementById('progressBar').style.width = pct + '%';
+  });
+</script>
+</body>
+</html>
