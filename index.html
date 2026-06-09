@@ -1,776 +1,470 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>AutoPerfect — Script Documentation</title>
+<title>AutoPerfect 2.0 — Complete User Manual</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --p700: #5b21b6;
-    --p600: #7c3aed;
-    --p500: #8b5cf6;
-    --p400: #a78bfa;
-    --p300: #c4b5fd;
-    --p200: #ddd6fe;
-    --p100: #ede9fe;
-    --p50:  #f5f3ff;
-    --accent: #7c3aed;
-
-    --bg:       #ffffff;
-    --bg2:      #fafafa;
-    --bg3:      #f5f3ff;
-    --surface:  #f8f7ff;
-    --card:     #ffffff;
-    --border:   #e5e7eb;
-    --border-p: #c4b5fd;
-
-    --text:       #111827;
-    --text-muted: #4b5563;
-    --text-dim:   #9ca3af;
-
-    --green:  #059669;
-    --yellow: #d97706;
-    --blue:   #2563eb;
-    --red:    #dc2626;
-
-    --sidebar-bg: #faf9ff;
-    --sidebar-border: #ede9fe;
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ─── SIDEBAR ─── */
-  .sidebar {
-    position: fixed;
-    left: 0; top: 0; bottom: 0;
-    width: 260px;
-    background: var(--sidebar-bg);
-    border-right: 1px solid var(--sidebar-border);
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-  }
-
-  .sidebar-brand {
-    padding: 26px 22px 18px;
-    border-bottom: 1px solid var(--sidebar-border);
-  }
-
-  .sidebar-brand .logo-mark {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 5px;
-  }
-
-  .sidebar-brand .logo-icon {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, var(--p600), var(--p400));
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 17px;
-    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
-  }
-
-  .sidebar-brand h1 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 17px;
-    font-weight: 700;
-    color: var(--text);
-    letter-spacing: -0.3px;
-  }
-
-  .sidebar-brand p {
-    font-size: 11px;
-    color: var(--text-dim);
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-    margin-top: 2px;
-    padding-left: 46px;
-  }
-
-  .sidebar-nav { padding: 14px 10px; flex: 1; }
-
-  .nav-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    padding: 0 10px;
-    margin-bottom: 6px;
-    margin-top: 14px;
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    padding: 9px 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    text-decoration: none;
-    color: var(--text-muted);
-    font-size: 13.5px;
-    font-weight: 500;
-    border: 1px solid transparent;
-  }
-
-  .nav-item:hover {
-    background: var(--p100);
-    color: var(--p600);
-  }
-
-  .nav-item.active {
-    background: var(--p100);
-    color: var(--p600);
-    border-color: var(--p300);
-    font-weight: 600;
-  }
-
-  .nav-item .nav-icon {
-    width: 26px; height: 26px;
-    background: var(--p50);
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px;
-    flex-shrink: 0;
-  }
-
-  .nav-item.active .nav-icon { background: var(--p200); }
-
-  .sidebar-footer {
-    padding: 14px;
-    border-top: 1px solid var(--sidebar-border);
-  }
-
-  .download-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    padding: 11px 16px;
-    background: linear-gradient(135deg, var(--p600), var(--p500));
-    color: #fff;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 600;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 12px rgba(124, 58, 237, 0.35);
-    letter-spacing: 0.1px;
-  }
-
-  .download-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.45);
-    filter: brightness(1.06);
-  }
-
-  /* ─── PROGRESS BAR ─── */
-  .progress-bar {
-    position: fixed;
-    top: 0; left: 260px; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--p600), var(--p400));
-    z-index: 200;
-    width: 0%;
-    transition: width 0.1s;
-  }
-
-  /* ─── MAIN ─── */
-  .main { margin-left: 260px; min-height: 100vh; }
-
-  .page { display: none; }
-  .page.active { display: block; animation: fadeIn 0.25s ease; }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ─── HERO ─── */
-  .hero {
-    padding: 60px 60px 50px;
-    background: linear-gradient(135deg, var(--p50) 0%, #fff 60%);
-    border-bottom: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero::after {
-    content: '';
-    position: absolute;
-    right: -60px; top: -60px;
-    width: 320px; height: 320px;
-    background: radial-gradient(circle, rgba(167,139,250,0.15) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-  }
-
-  .hero-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.4px;
-    text-transform: uppercase;
-    color: var(--p600);
-    background: var(--p100);
-    border: 1px solid var(--p300);
-    padding: 4px 12px;
-    border-radius: 20px;
-    margin-bottom: 18px;
-  }
-
-  .hero h2 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 38px;
-    font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: -1.2px;
-    color: var(--text);
-    margin-bottom: 12px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .hero h2 .accent { color: var(--p600); }
-
-  .hero-desc {
-    font-size: 15px;
-    color: var(--text-muted);
-    line-height: 1.7;
-    max-width: 540px;
-    position: relative;
-    z-index: 1;
-  }
-
-  /* ─── CONTENT ─── */
-  .content { padding: 44px 60px 80px; }
-
-  /* ─── SECTION LABEL ─── */
-  .section-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--p600);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .section-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  /* ─── TAGS ─── */
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-    margin-bottom: 28px;
-  }
-
-  .tag {
-    font-size: 11.5px;
-    font-weight: 500;
-    padding: 4px 11px;
-    border-radius: 20px;
-    border: 1px solid;
-  }
-
-  .tag-purple { color: var(--p700);  background: var(--p100);                  border-color: var(--p300); }
-  .tag-green  { color: var(--green); background: #ecfdf5;                       border-color: #6ee7b7; }
-  .tag-blue   { color: var(--blue);  background: #eff6ff;                       border-color: #93c5fd; }
-  .tag-yellow { color: var(--yellow);background: #fffbeb;                       border-color: #fcd34d; }
-  .tag-red    { color: var(--red);   background: #fef2f2;                       border-color: #fca5a5; }
-
-  /* ─── INFO BOX ─── */
-  .info-box {
-    background: var(--p50);
-    border: 1px solid var(--p200);
-    border-left: 3px solid var(--p500);
-    border-radius: 10px;
-    padding: 14px 18px;
-    margin-bottom: 28px;
-    font-size: 13.5px;
-    color: var(--text-muted);
-    line-height: 1.7;
-  }
-
-  .info-box strong { color: var(--p700); }
-
-  /* ─── STEPS ─── */
-  .steps {
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-    margin-bottom: 40px;
-    background: #fff;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  }
-
-  .step {
-    display: flex;
-    gap: 18px;
-    padding: 20px 24px;
-    border-bottom: 1px solid var(--border);
-    align-items: flex-start;
-    transition: background 0.15s;
-  }
-
-  .step:last-child { border-bottom: none; }
-  .step:hover { background: var(--p50); }
-
-  .step-num {
-    width: 28px; height: 28px;
-    border-radius: 7px;
-    background: linear-gradient(135deg, var(--p600), var(--p400));
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    font-weight: 600;
-    color: #fff;
-    flex-shrink: 0;
-    margin-top: 2px;
-    box-shadow: 0 1px 5px rgba(124,58,237,0.3);
-  }
-
-  .step-body h4 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-
-  .step-body p {
-    font-size: 13.5px;
-    color: var(--text-muted);
-    line-height: 1.65;
-  }
-
-  /* ─── FEATURE GRID ─── */
-  .feature-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 14px;
-    margin-bottom: 40px;
-  }
-
-  .feature-card {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 22px;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-  }
-
-  .feature-card:hover {
-    border-color: var(--p300);
-    box-shadow: 0 4px 16px rgba(124,58,237,0.1);
-    transform: translateY(-1px);
-  }
-
-  .card-icon {
-    width: 40px; height: 40px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 19px;
-    margin-bottom: 14px;
-  }
-
-  .icon-purple { background: var(--p100); }
-  .icon-green  { background: #d1fae5; }
-  .icon-blue   { background: #dbeafe; }
-  .icon-yellow { background: #fef3c7; }
-  .icon-red    { background: #fee2e2; }
-  .icon-pink   { background: #fce7f3; }
-
-  .feature-card h3 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-
-  .feature-card p {
-    font-size: 13px;
-    color: var(--text-muted);
-    line-height: 1.65;
-  }
-
-  /* ─── TABLE ─── */
-  .diff-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 36px;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-  }
-
-  .diff-table th {
-    background: var(--bg2);
-    padding: 12px 16px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--p700);
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .diff-table td {
-    padding: 13px 16px;
-    font-size: 13.5px;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border);
-    line-height: 1.5;
-    background: #fff;
-  }
-
-  .diff-table tr:last-child td { border-bottom: none; }
-  .diff-table tr:hover td { background: var(--p50); }
-  .diff-table td:first-child { color: var(--text); font-weight: 500; }
-
-  /* ─── CHECK LIST ─── */
-  .check-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 32px;
-  }
-
-  .check-list li {
-    display: flex;
-    align-items: flex-start;
-    gap: 9px;
-    font-size: 13.5px;
-    color: var(--text-muted);
-    line-height: 1.65;
-  }
-
-  .check-list li::before {
-    content: '✓';
-    color: var(--p600);
-    font-weight: 700;
-    font-size: 12px;
-    margin-top: 2px;
-    flex-shrink: 0;
-    background: var(--p100);
-    width: 18px; height: 18px;
-    border-radius: 4px;
-    display: flex; align-items: center; justify-content: center;
-  }
-
-  /* ─── MONO ─── */
-  .mono {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    background: var(--p100);
-    color: var(--p700);
-    padding: 2px 6px;
-    border-radius: 4px;
-    border: 1px solid var(--p200);
-  }
-
-  /* ─── HOME PAGE ─── */
-  .home-hero {
-    padding: 72px 60px 56px;
-    background: linear-gradient(135deg, var(--p50) 0%, #fff 55%);
-    border-bottom: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .home-hero::before {
-    content: '';
-    position: absolute;
-    right: -100px; bottom: -100px;
-    width: 500px; height: 500px;
-    background: radial-gradient(circle, rgba(196,181,253,0.2) 0%, transparent 65%);
-    border-radius: 50%;
-    pointer-events: none;
-  }
-
-  .home-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    background: var(--p100);
-    border: 1px solid var(--p300);
-    color: var(--p700);
-    font-size: 11.5px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    padding: 5px 13px;
-    border-radius: 30px;
-    margin-bottom: 22px;
-    position: relative; z-index: 1;
-  }
-
-  .home-tag .dot {
-    width: 6px; height: 6px;
-    background: var(--p500);
-    border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  .home-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 58px;
-    font-weight: 700;
-    line-height: 1.0;
-    letter-spacing: -2.5px;
-    color: var(--text);
-    margin-bottom: 16px;
-    position: relative; z-index: 1;
-  }
-
-  .home-title span { color: var(--p600); }
-
-  .home-subtitle {
-    font-size: 16px;
-    color: var(--text-muted);
-    line-height: 1.75;
-    max-width: 560px;
-    margin-bottom: 36px;
-    position: relative; z-index: 1;
-  }
-
-  .home-scripts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 12px;
-    position: relative; z-index: 1;
-  }
-
-  .home-script-card {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    cursor: pointer;
-    transition: all 0.18s ease;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  }
-
-  .home-script-card:hover {
-    border-color: var(--p300);
-    box-shadow: 0 6px 20px rgba(124,58,237,0.12);
-    transform: translateY(-2px);
-  }
-
-  .home-script-card .card-top {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-
-  .home-script-card .card-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    color: var(--p600);
-    background: var(--p100);
-    border: 1px solid var(--p200);
-    padding: 2px 7px;
-    border-radius: 4px;
-    font-weight: 500;
-  }
-
-  .home-script-card h3 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  .home-script-card p {
-    font-size: 12.5px;
-    color: var(--text-muted);
-    line-height: 1.6;
-  }
-
-  .home-script-card .arrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    color: var(--p600);
-    font-weight: 600;
-    margin-top: 12px;
-  }
-
-  /* ─── QC ISSUE BADGES ─── */
-  .issue-badges {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 36px;
-  }
-
-  .issue-badge {
-    background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 18px 14px;
-    text-align: center;
-    transition: all 0.15s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-  }
-
-  .issue-badge:hover { border-color: var(--p300); }
-  .issue-badge .ib-icon { font-size: 24px; margin-bottom: 8px; }
-  .issue-badge .ib-name { font-size: 12.5px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-  .issue-badge .ib-desc { font-size: 11.5px; color: var(--text-dim); line-height: 1.5; }
-
-  /* ─── GITHUB CALLOUT ─── */
-  .github-callout {
-    background: #f0fdf4;
-    border: 1px solid #86efac;
-    border-radius: 14px;
-    padding: 28px 32px;
-    margin-bottom: 32px;
-  }
-
-  .github-callout h3 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    color: #166534;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .github-callout ol {
-    margin-left: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .github-callout ol li {
-    font-size: 13.5px;
-    color: #14532d;
-    line-height: 1.7;
-  }
-
-  .github-callout .path-pill {
-    display: inline-block;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    background: #dcfce7;
-    color: #166534;
-    border: 1px solid #86efac;
-    padding: 2px 8px;
-    border-radius: 5px;
-    font-weight: 500;
-  }
-
-  .github-callout .note {
-    margin-top: 16px;
-    padding: 12px 16px;
-    background: #dcfce7;
-    border-radius: 8px;
-    font-size: 13px;
-    color: #166534;
-    line-height: 1.65;
-  }
-
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 900px) {
-    .sidebar { display: none; }
-    .main { margin-left: 0; }
-    .content, .hero, .home-hero { padding-left: 20px; padding-right: 20px; }
-    .home-title { font-size: 36px; }
-    .hero h2 { font-size: 26px; }
-    .feature-grid, .issue-badges, .home-scripts-grid { grid-template-columns: 1fr; }
-  }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --p700:#5b21b6;--p600:#7c3aed;--p500:#8b5cf6;--p400:#a78bfa;
+  --p300:#c4b5fd;--p200:#ddd6fe;--p100:#ede9fe;--p50:#f5f3ff;
+  --bg:#fff;--bg2:#fafafa;--border:#e5e7eb;--border-p:#c4b5fd;
+  --text:#111827;--text-muted:#4b5563;--text-dim:#9ca3af;
+  --green:#059669;--yellow:#d97706;--blue:#2563eb;--red:#dc2626;
+  --sidebar-bg:#faf9ff;--sidebar-border:#ede9fe;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── SIDEBAR ── */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:268px;background:var(--sidebar-bg);border-right:1px solid var(--sidebar-border);z-index:100;display:flex;flex-direction:column;overflow-y:auto}
+.sidebar-brand{padding:22px 18px 14px;border-bottom:1px solid var(--sidebar-border)}
+.logo-mark{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--p600),var(--p400));border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(124,58,237,.3);flex-shrink:0}
+.logo-icon svg{width:20px;height:20px}
+.sidebar-brand h1{font-family:'Space Grotesk',sans-serif;font-size:16px;font-weight:700;color:var(--text);letter-spacing:-.3px}
+.version-row{display:flex;align-items:center;gap:6px;margin-top:4px;padding-left:46px}
+.v-pill{font-size:10px;font-weight:700;background:var(--p100);color:var(--p700);border:1px solid var(--p200);padding:1px 7px;border-radius:20px}
+.v-sub{font-size:10.5px;color:var(--text-dim);text-transform:uppercase;letter-spacing:.4px}
+.sidebar-nav{padding:10px 8px;flex:1}
+.nav-section-label{font-size:9.5px;font-weight:700;letter-spacing:1.3px;text-transform:uppercase;color:var(--text-dim);padding:0 10px;margin-bottom:4px;margin-top:14px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;cursor:pointer;transition:all .15s;text-decoration:none;color:var(--text-muted);font-size:13px;font-weight:500;border:1px solid transparent;margin-bottom:1px}
+.nav-item:hover{background:var(--p100);color:var(--p600)}
+.nav-item.active{background:var(--p100);color:var(--p600);border-color:var(--p300);font-weight:600}
+.nav-icon{width:26px;height:26px;background:var(--p50);border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-icon svg{width:14px;height:14px}
+.nav-icon svg path,.nav-icon svg rect,.nav-icon svg circle,.nav-icon svg polyline,.nav-icon svg line,.nav-icon svg polygon{stroke:var(--p400)}
+.nav-item.active .nav-icon{background:var(--p200)}
+.nav-item.active .nav-icon svg path,.nav-item.active .nav-icon svg rect,.nav-item.active .nav-icon svg circle,.nav-item.active .nav-icon svg polyline,.nav-item.active .nav-icon svg line,.nav-item.active .nav-icon svg polygon{stroke:var(--p700)}
+.nav-item:hover .nav-icon svg path,.nav-item:hover .nav-icon svg rect,.nav-item:hover .nav-icon svg circle,.nav-item:hover .nav-icon svg polyline,.nav-item:hover .nav-icon svg line,.nav-item:hover .nav-icon svg polygon{stroke:var(--p600)}
+.sidebar-footer{padding:12px 14px;border-top:1px solid var(--sidebar-border)}
+.download-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px 16px;background:linear-gradient(135deg,var(--p600),var(--p500));color:#fff;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;border:none;cursor:pointer;transition:all .2s;box-shadow:0 2px 12px rgba(124,58,237,.35)}
+.download-btn:hover{transform:translateY(-1px);box-shadow:0 4px 20px rgba(124,58,237,.45);filter:brightness(1.06)}
+.download-btn svg{width:16px;height:16px;flex-shrink:0}
+
+/* ── LAYOUT ── */
+.progress-bar{position:fixed;top:0;left:268px;right:0;height:3px;background:linear-gradient(90deg,var(--p600),var(--p400));z-index:200;width:0%;transition:width .1s}
+.main{margin-left:268px;min-height:100vh}
+.page{display:none}
+.page.active{display:block;animation:fadeIn .22s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── HERO ── */
+.hero{padding:52px 56px 44px;background:linear-gradient(135deg,var(--p50) 0%,#fff 65%);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;right:-40px;top:-40px;width:280px;height:280px;background:radial-gradient(circle,rgba(167,139,250,.14) 0%,transparent 70%);border-radius:50%;pointer-events:none}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--p600);background:var(--p100);border:1px solid var(--p300);padding:4px 11px;border-radius:20px;margin-bottom:16px}
+.hero-eyebrow svg{width:12px;height:12px}
+.hero h2{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;line-height:1.1;letter-spacing:-1px;color:var(--text);margin-bottom:10px;position:relative;z-index:1}
+.hero h2 .accent{color:var(--p600)}
+.hero-desc{font-size:14.5px;color:var(--text-muted);line-height:1.7;max-width:540px;position:relative;z-index:1}
+.content{padding:40px 56px 80px}
+
+/* ── SECTION LABEL ── */
+.section-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--p600);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── TAGS ── */
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px}
+.tag{font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid}
+.tag-purple{color:var(--p700);background:var(--p100);border-color:var(--p300)}
+.tag-green{color:var(--green);background:#ecfdf5;border-color:#6ee7b7}
+.tag-blue{color:var(--blue);background:#eff6ff;border-color:#93c5fd}
+.tag-yellow{color:var(--yellow);background:#fffbeb;border-color:#fcd34d}
+.tag-red{color:var(--red);background:#fef2f2;border-color:#fca5a5}
+
+/* ── CALLOUT BOXES ── */
+.info-box{background:var(--p50);border:1px solid var(--p200);border-left:3px solid var(--p500);border-radius:10px;padding:13px 17px;margin-bottom:26px;font-size:13.5px;color:var(--text-muted);line-height:1.7}
+.info-box strong{color:var(--p700)}
+.warn-box{background:#fffbeb;border:1px solid #fcd34d;border-left:3px solid var(--yellow);border-radius:10px;padding:13px 17px;margin-bottom:26px;font-size:13.5px;color:#78350f;line-height:1.7}
+.warn-box strong{color:#92400e}
+.success-box{background:#f0fdf4;border:1px solid #86efac;border-left:3px solid var(--green);border-radius:10px;padding:13px 17px;margin-bottom:26px;font-size:13.5px;color:#14532d;line-height:1.7}
+.success-box strong{color:#166534}
+
+/* ── STEPS ── */
+.steps{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:36px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.step{display:flex;gap:16px;padding:18px 22px;border-bottom:1px solid var(--border);align-items:flex-start;transition:background .15s}
+.step:last-child{border-bottom:none}
+.step:hover{background:var(--p50)}
+.step-num{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,var(--p600),var(--p400));display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#fff;flex-shrink:0;margin-top:2px;box-shadow:0 1px 5px rgba(124,58,237,.3)}
+.step-body h4{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.step-body p{font-size:13.5px;color:var(--text-muted);line-height:1.65}
+
+/* ── FEATURE GRID ── */
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:36px}
+.feature-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px;transition:all .18s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.feature-card:hover{border-color:var(--p300);box-shadow:0 4px 16px rgba(124,58,237,.1);transform:translateY(-1px)}
+.card-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:13px}
+.card-icon svg{width:20px;height:20px}
+.ci-purple{background:var(--p100)}
+.ci-green{background:#d1fae5}
+.ci-blue{background:#dbeafe}
+.ci-yellow{background:#fef3c7}
+.ci-red{background:#fee2e2}
+.ci-pink{background:#fce7f3}
+.ci-gray{background:#f3f4f6}
+.feature-card h3{font-family:'Space Grotesk',sans-serif;font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:5px}
+.feature-card p{font-size:12.5px;color:var(--text-muted);line-height:1.6}
+
+/* ── TABLE ── */
+.diff-table{width:100%;border-collapse:collapse;margin-bottom:32px;border-radius:12px;overflow:hidden;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.diff-table th{background:var(--bg2);padding:11px 15px;font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--p700);text-align:left;border-bottom:1px solid var(--border)}
+.diff-table td{padding:12px 15px;font-size:13.5px;color:var(--text-muted);border-bottom:1px solid var(--border);background:#fff}
+.diff-table tr:last-child td{border-bottom:none}
+.diff-table tr:hover td{background:var(--p50)}
+.diff-table td:first-child{color:var(--text);font-weight:500}
+
+/* ── CHECKLIST ── */
+.check-list{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:28px}
+.check-list li{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;color:var(--text-muted);line-height:1.65}
+.check-list li .chk{width:18px;height:18px;background:var(--p100);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.check-list li .chk svg{width:10px;height:10px}
+
+/* ── MONO ── */
+.mono{font-family:'JetBrains Mono',monospace;font-size:11.5px;background:var(--p100);color:var(--p700);padding:2px 6px;border-radius:4px;border:1px solid var(--p200)}
+.path-pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11.5px;background:#f0fdf4;color:#166534;border:1px solid #86efac;padding:2px 7px;border-radius:5px;font-weight:500}
+
+/* ── HOME ── */
+.home-hero{padding:64px 56px 52px;background:linear-gradient(135deg,var(--p50) 0%,#fff 55%);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.home-hero::before{content:'';position:absolute;right:-80px;bottom:-80px;width:480px;height:480px;background:radial-gradient(circle,rgba(196,181,253,.18) 0%,transparent 65%);border-radius:50%;pointer-events:none}
+.home-tag{display:inline-flex;align-items:center;gap:7px;background:var(--p100);border:1px solid var(--p300);color:var(--p700);font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;padding:5px 12px;border-radius:30px;margin-bottom:20px;position:relative;z-index:1}
+.home-tag .dot{width:6px;height:6px;background:var(--p500);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.home-title{font-family:'Space Grotesk',sans-serif;font-size:54px;font-weight:700;line-height:1.0;letter-spacing:-2.5px;color:var(--text);margin-bottom:14px;position:relative;z-index:1}
+.home-title span{color:var(--p600)}
+.home-subtitle{font-size:15.5px;color:var(--text-muted);line-height:1.75;max-width:560px;margin-bottom:32px;position:relative;z-index:1}
+.home-meta{display:flex;flex-wrap:wrap;gap:20px;margin-bottom:36px;position:relative;z-index:1}
+.home-meta-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted)}
+.home-meta-item svg{width:16px;height:16px;flex-shrink:0}
+.home-meta-item strong{color:var(--text);font-weight:600}
+
+/* WORKFLOW BANNER */
+.workflow-banner{background:linear-gradient(135deg,var(--p50),#fff);border:1px solid var(--p200);border-radius:14px;padding:26px 30px;margin-bottom:36px}
+.workflow-banner h3{font-family:'Space Grotesk',sans-serif;font-size:14.5px;font-weight:700;color:var(--p700);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.workflow-banner h3 svg{width:16px;height:16px}
+.workflow-steps{display:flex;align-items:flex-start;gap:0;flex-wrap:wrap}
+.wf-step{display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;min-width:90px;position:relative}
+.wf-step:not(:last-child)::after{content:'→';position:absolute;right:-10px;top:13px;color:var(--p400);font-size:15px;font-weight:700}
+.wf-icon{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--p500),var(--p300));display:flex;align-items:center;justify-content:center;margin-bottom:10px;box-shadow:0 4px 14px rgba(124,58,237,.2)}
+.wf-icon svg{width:24px;height:24px}
+.wf-icon svg path,.wf-icon svg polyline,.wf-icon svg line,.wf-icon svg rect,.wf-icon svg circle,.wf-icon svg polygon{stroke:rgba(255,255,255,0.9) !important}
+.wf-label{font-size:11.5px;font-weight:600;color:var(--text);margin-bottom:2px}
+.wf-sub{font-size:10.5px;color:var(--text-dim)}
+
+/* QUICK START GRID */
+.quickstart-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;position:relative;z-index:1}
+.qs-card{background:#fff;border:1px solid var(--border);border-radius:11px;padding:16px;cursor:pointer;transition:all .16s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.qs-card:hover{border-color:var(--p300);box-shadow:0 4px 16px rgba(124,58,237,.1);transform:translateY(-2px)}
+.qs-top{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.qs-num{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--p600);background:var(--p100);border:1px solid var(--p200);padding:2px 6px;border-radius:4px;font-weight:500}
+.qs-card h3{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;color:var(--text)}
+.qs-card p{font-size:12px;color:var(--text-dim);line-height:1.55}
+.qs-arrow{font-size:11.5px;color:var(--p600);font-weight:600;margin-top:10px;display:inline-flex;align-items:center;gap:4px}
+.qs-arrow svg{width:11px;height:11px}
+
+/* INSTALL */
+.install-os-tabs{display:flex;gap:6px;margin-bottom:22px}
+.os-tab{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:#fff;color:var(--text-muted);transition:all .15s;display:flex;align-items:center;gap:7px}
+.os-tab svg{width:15px;height:15px}
+.os-tab.active{background:var(--p100);color:var(--p700);border-color:var(--p300)}
+.os-content{display:none}
+.os-content.active{display:block}
+.install-card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:32px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.install-card-header{background:linear-gradient(135deg,var(--p50),#fff);border-bottom:1px solid var(--border);padding:18px 24px;display:flex;align-items:center;gap:12px}
+.ic-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--p600),var(--p400));border-radius:9px;display:flex;align-items:center;justify-content:center}
+.ic-icon svg{width:18px;height:18px}
+.ic-icon svg path,.ic-icon svg rect,.ic-icon svg circle,.ic-icon svg polyline,.ic-icon svg line,.ic-icon svg polygon{stroke:#fff !important}
+.install-card-header h3{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:var(--text)}
+.install-card-header p{font-size:12.5px;color:var(--text-muted);margin-top:2px}
+.install-steps{padding:4px 0}
+.install-step{display:flex;align-items:flex-start;gap:16px;padding:16px 24px;border-bottom:1px solid var(--border)}
+.install-step:last-child{border-bottom:none}
+.install-step:hover{background:var(--p50)}
+.is-num{width:28px;height:28px;background:linear-gradient(135deg,var(--p600),var(--p400));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;margin-top:1px}
+.is-body{flex:1}
+.is-body h4{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;font-family:'Space Grotesk',sans-serif}
+.is-body p{font-size:13px;color:var(--text-muted);line-height:1.65}
+.path-block{margin-top:8px;background:#f8f9fa;border:1px solid #e9ecef;border-radius:8px;padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#495057;line-height:1.7}
+.path-block .sep{color:var(--p400);font-weight:700;margin:0 4px}
+.step-icon{width:28px;height:28px;border-radius:7px;background:var(--p600);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-icon svg{width:14px;height:14px}
+.step-icon svg path,.step-icon svg polyline,.step-icon svg line,.step-icon svg rect,.step-icon svg circle,.step-icon svg polygon{stroke:#fff !important}
+
+/* VERIFY */
+.verify-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:32px}
+.verify-card{border-radius:12px;padding:18px;border:1px solid}
+.verify-good{background:#f0fdf4;border-color:#86efac}
+.verify-bad{background:#fef2f2;border-color:#fca5a5}
+.verify-card h4{font-size:13px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.verify-card h4 svg{width:15px;height:15px}
+.verify-good h4{color:#166534}
+.verify-bad h4{color:#991b1b}
+.verify-card p{font-size:12.5px;line-height:1.6}
+.verify-good p{color:#14532d}
+.verify-bad p{color:#7f1d1d}
+
+/* USAGE FLOW */
+.usage-flow{display:flex;flex-direction:column;gap:0;margin-bottom:36px}
+.uf-row{display:flex;align-items:stretch}
+.uf-left{display:flex;flex-direction:column;align-items:center;width:48px;flex-shrink:0}
+.uf-circle{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--p500),var(--p300));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(124,58,237,.2)}
+.uf-circle svg{width:17px;height:17px}
+.uf-circle svg path,.uf-circle svg polyline,.uf-circle svg line,.uf-circle svg rect,.uf-circle svg circle,.uf-circle svg polygon{stroke:rgba(255,255,255,0.9) !important}
+.uf-line{flex:1;width:2px;background:var(--p200);margin:4px 0}
+.uf-card{flex:1;background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:12px;margin-left:12px;box-shadow:0 1px 3px rgba(0,0,0,.04);transition:border-color .15s}
+.uf-card:hover{border-color:var(--p300)}
+.uf-card h4{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px}
+.uf-card p{font-size:13px;color:var(--text-muted);line-height:1.65}
+.uf-script{font-size:11px;font-weight:600;color:var(--p600);background:var(--p100);border:1px solid var(--p200);padding:2px 8px;border-radius:4px;display:inline-block;margin-top:6px;font-family:'JetBrains Mono',monospace}
+
+/* TIPS */
+.tip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:32px}
+.tip-card{border-radius:12px;padding:18px;border:1px solid}
+.tip-do{background:#f0fdf4;border-color:#86efac}
+.tip-dont{background:#fef2f2;border-color:#fca5a5}
+.tip-info{background:var(--p50);border-color:var(--p200)}
+.tip-card h4{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.tip-card h4 svg{width:14px;height:14px}
+.tip-do h4{color:var(--green)}
+.tip-dont h4{color:var(--red)}
+.tip-info h4{color:var(--p600)}
+.tip-card ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.tip-card ul li{font-size:12.5px;line-height:1.6;padding-left:14px;position:relative}
+.tip-card ul li::before{content:'•';position:absolute;left:0;font-weight:700}
+.tip-do ul li{color:#14532d}.tip-do ul li::before{color:var(--green)}
+.tip-dont ul li{color:#7f1d1d}.tip-dont ul li::before{color:var(--red)}
+.tip-info ul li{color:var(--p700)}.tip-info ul li::before{color:var(--p500)}
+
+/* ISSUE BADGES */
+.issue-badges{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:32px}
+.issue-badge{background:#fff;border:1px solid var(--border);border-radius:11px;padding:16px 12px;text-align:center;transition:all .15s;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.issue-badge:hover{border-color:var(--p300)}
+.ib-icon{display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.ib-icon svg{width:26px;height:26px}
+.ib-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px}
+.ib-desc{font-size:11px;color:var(--text-dim);line-height:1.5}
+
+@media(max-width:960px){
+  .sidebar{display:none}.main{margin-left:0}
+  .content,.hero,.home-hero{padding-left:18px;padding-right:18px}
+  .home-title{font-size:36px}.hero h2{font-size:24px}
+  .feature-grid,.issue-badges,.quickstart-grid,.verify-grid,.tip-grid{grid-template-columns:1fr}
+  .wf-step:not(:last-child)::after{display:none}
+}
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
+<!-- ═══════════════════════════════════════
+     SVG ICON DEFS — all icons embedded here
+════════════════════════════════════════ -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- bolt / logo -->
+    <symbol id="ic-bolt" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+    </symbol>
+    <!-- home -->
+    <symbol id="ic-home" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+    </symbol>
+    <!-- box / install -->
+    <symbol id="ic-box" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/>
+    </symbol>
+    <!-- play / usage -->
+    <symbol id="ic-play" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>
+    </symbol>
+    <!-- layers / renditions -->
+    <symbol id="ic-layers" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+    </symbol>
+    <!-- sparkles / magic fix -->
+    <symbol id="ic-sparkle" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/>
+    </symbol>
+    <!-- clipboard / qc -->
+    <symbol id="ic-clipboard" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+    </symbol>
+    <!-- type / text -->
+    <symbol id="ic-type" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/>
+    </symbol>
+    <!-- upload / export -->
+    <symbol id="ic-upload" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+    </symbol>
+    <!-- bulb / tips -->
+    <symbol id="ic-bulb" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/>
+      <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>
+    </symbol>
+    <!-- tool / troubleshoot -->
+    <symbol id="ic-tool" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+    </symbol>
+    <!-- download (white for btn) -->
+    <symbol id="ic-download" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+    </symbol>
+    <!-- check (for check list + verify good) -->
+    <symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </symbol>
+    <!-- check green -->
+    <symbol id="ic-check-green" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </symbol>
+    <!-- x (for verify bad) -->
+    <symbol id="ic-x" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </symbol>
+    <!-- arrow right -->
+    <symbol id="ic-arrow-right" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+    </symbol>
+    <!-- apple -->
+    <symbol id="ic-apple" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4z"/><path d="M8.5 10C5 10 2 14 2 18c0 2.2 1.8 4 4 4 1 0 2-.4 2.5-1l1-1c.5-.6 1.5-.6 2 0l1 1c.5.6 1.5 1 2.5 1 2.2 0 4-1.8 4-4 0-4-3-8-6.5-8z"/>
+    </symbol>
+    <!-- windows -->
+    <symbol id="ic-windows" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="3" width="20" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="2" y1="12" x2="22" y2="12"/>
+    </symbol>
+    <!-- scale -->
+    <symbol id="ic-scale" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+    </symbol>
+    <!-- text-cursor -->
+    <symbol id="ic-cursor" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17 22h-1a4 4 0 0 1-4-4V6a4 4 0 0 1 4-4h1"/><path d="M7 22h1a4 4 0 0 0 4-4v-1"/><path d="M7 2h1a4 4 0 0 1 4 4v1"/>
+    </symbol>
+    <!-- pen-tool / stroke -->
+    <symbol id="ic-pen" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/>
+    </symbol>
+    <!-- crop -->
+    <symbol id="ic-crop" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6.13 1L6 16a2 2 0 0 0 2 2h15"/><path d="M1 6.13l15-.13a2 2 0 0 1 2 2v15"/>
+    </symbol>
+    <!-- refresh -->
+    <symbol id="ic-refresh" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+    </symbol>
+    <!-- alert circle -->
+    <symbol id="ic-alert" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+    </symbol>
+    <!-- image / png -->
+    <symbol id="ic-image" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+    </symbol>
+    <!-- search / qc -->
+    <symbol id="ic-search" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </symbol>
+    <!-- font size -->
+    <symbol id="ic-fontsize" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/>
+    </symbol>
+    <!-- move -->
+    <symbol id="ic-move" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 9 22 12 19 15"/>
+      <line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/>
+    </symbol>
+    <!-- trash / empty layers -->
+    <symbol id="ic-trash" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+    </symbol>
+    <!-- shield / verify -->
+    <symbol id="ic-shield" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </symbol>
+    <!-- info -->
+    <symbol id="ic-info" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+    </symbol>
+    <!-- file -->
+    <symbol id="ic-file" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+    </symbol>
+    <!-- target -->
+    <symbol id="ic-target" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+    </symbol>
+    <!-- panel / smart app -->
+    <symbol id="ic-panel" viewBox="0 0 24 24" fill="none" stroke="var(--p400)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="3"/>
+      <line x1="3" y1="9" x2="21" y2="9"/>
+      <line x1="8" y1="6" x2="8.01" y2="6" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="12" y1="6" x2="12.01" y2="6" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="16" y1="6" x2="16.01" y2="6" stroke-width="2.5" stroke-linecap="round"/>
+    </symbol>
+    <!-- list -->
+    <symbol id="ic-list" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+      <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ═══════ SIDEBAR ═══════ -->
 <nav class="sidebar">
   <div class="sidebar-brand">
     <div class="logo-mark">
-      <div class="logo-icon">⚡</div>
+      <div class="logo-icon"><svg><use href="#ic-bolt"/></svg></div>
       <h1>AutoPerfect</h1>
     </div>
-    <p>Illustrator Script Suite</p>
+    <div class="version-row"><span class="v-pill">v2.0</span><span class="v-sub">Illustrator Scripts</span></div>
   </div>
 
   <div class="sidebar-nav">
-    <div class="nav-label">Overview</div>
-    <a class="nav-item active" onclick="showPage('home', this)">
-      <div class="nav-icon">🏠</div> Home
+    <div class="nav-section-label">Getting Started</div>
+    <a class="nav-item active" onclick="showPage('home',this)">
+      <div class="nav-icon"><svg><use href="#ic-home"/></svg></div>Overview
+    </a>
+    <a class="nav-item" onclick="showPage('install',this)">
+      <div class="nav-icon"><svg><use href="#ic-box"/></svg></div>Installation
+    </a>
+    <a class="nav-item" onclick="showPage('smartapp',this)">
+      <div class="nav-icon"><svg><use href="#ic-panel"/></svg></div>Smart App Panel
+    </a>
+    <a class="nav-item" onclick="showPage('usage',this)">
+      <div class="nav-icon"><svg><use href="#ic-play"/></svg></div>How to Use
     </a>
 
-    <div class="nav-label">Scripts</div>
-    <a class="nav-item" onclick="showPage('brix', this)">
-      <div class="nav-icon">🎨</div> Smart Renditions
+    <div class="nav-section-label">Scripts</div>
+    <a class="nav-item" onclick="showPage('brix',this)">
+      <div class="nav-icon"><svg><use href="#ic-layers"/></svg></div>Smart Renditions
     </a>
-    <a class="nav-item" onclick="showPage('magicfix', this)">
-      <div class="nav-icon">✨</div> Magic Fix
+    <a class="nav-item" onclick="showPage('magicfix',this)">
+      <div class="nav-icon"><svg><use href="#ic-sparkle"/></svg></div>Magic Fix
     </a>
-    <a class="nav-item" onclick="showPage('qc', this)">
-      <div class="nav-icon">🔍</div> QC Report
+    <a class="nav-item" onclick="showPage('qc',this)">
+      <div class="nav-icon"><svg><use href="#ic-clipboard"/></svg></div>QC Report
     </a>
-    <a class="nav-item" onclick="showPage('text', this)">
-      <div class="nav-icon">🔤</div> Text Cleanup
+    <a class="nav-item" onclick="showPage('text',this)">
+      <div class="nav-icon"><svg><use href="#ic-type"/></svg></div>Text Cleanup
     </a>
-    <a class="nav-item" onclick="showPage('export', this)">
-      <div class="nav-icon">📤</div> Export PNG
+    <a class="nav-item" onclick="showPage('export',this)">
+      <div class="nav-icon"><svg><use href="#ic-upload"/></svg></div>Export PNG
     </a>
 
-    <div class="nav-label">Resources</div>
-    <a class="nav-item" onclick="showPage('github', this)">
-      <div class="nav-icon">📁</div> GitHub Setup
+    <div class="nav-section-label">Reference</div>
+    <a class="nav-item" onclick="showPage('tips',this)">
+      <div class="nav-icon"><svg><use href="#ic-bulb"/></svg></div>Tips &amp; Best Practices
+    </a>
+    <a class="nav-item" onclick="showPage('troubleshoot',this)">
+      <div class="nav-icon"><svg><use href="#ic-tool"/></svg></div>Troubleshooting
     </a>
   </div>
 
   <div class="sidebar-footer">
     <a href="AutoPerfect_2_0.zip" download="AutoPerfect_2_0.zip" class="download-btn">
-      ⬇ &nbsp;Download All Scripts
+      <svg><use href="#ic-download"/></svg>Download AutoPerfect 2.0
     </a>
   </div>
 </nav>
@@ -779,440 +473,690 @@
 
 <main class="main">
 
-  <!-- ══════ HOME ══════ -->
-  <div class="page active" id="page-home">
-    <div class="home-hero">
-      <div class="home-tag"><div class="dot"></div> Adobe Illustrator · ExtendScript</div>
-      <h1 class="home-title">Auto<span>Perfect</span></h1>
-      <p class="home-subtitle">Five precision scripts that automate cleanup, scaling, QC reporting, text normalization, and PNG export inside Adobe Illustrator — built for production-speed workflows.</p>
-      <div class="tags" style="margin-bottom:32px">
-        <span class="tag tag-purple">Adobe Illustrator</span>
-        <span class="tag tag-blue">ExtendScript JSX</span>
-        <span class="tag tag-green">Production Ready</span>
-        <span class="tag tag-yellow">v2.0</span>
+<!-- ═══════════════════════ HOME ═══════════════════════ -->
+<div class="page active" id="page-home">
+  <div class="home-hero">
+    <div class="home-tag"><div class="dot"></div>Adobe Illustrator · ExtendScript · v2.0</div>
+    <h1 class="home-title">Auto<span>Perfect</span></h1>
+    <p class="home-subtitle">The complete production toolkit for Adobe Illustrator. Five scripts that handle cleanup, multi-size scaling, quality checking, text normalization, and PNG export — so you can go from raw artwork to export-ready assets in minutes.</p>
+    <div class="home-meta">
+      <div class="home-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg><strong>5 Scripts</strong>&nbsp;included</div>
+      <div class="home-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="2" y1="12" x2="22" y2="12"/></svg><strong>Mac &amp; Windows</strong>&nbsp;compatible</div>
+      <div class="home-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><strong>One-click</strong>&nbsp;workflows</div>
+      <div class="home-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><strong>No internet</strong>&nbsp;required</div>
+    </div>
+    <div class="tags" style="margin-bottom:32px">
+      <span class="tag tag-purple">Adobe Illustrator 2024–2026</span>
+      <span class="tag tag-blue">ExtendScript JSX</span>
+      <span class="tag tag-green">Production Ready</span>
+      <span class="tag tag-yellow">Free to Use</span>
+    </div>
+
+    <div class="workflow-banner">
+      <h3><svg viewBox="0 0 24 24" fill="none" stroke="var(--p700)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Recommended Workflow — via Smart App Panel</h3>
+      <div style="font-size:12.5px;color:var(--text-dim);margin-bottom:18px;line-height:1.6">Launch <strong style="color:var(--p600)">brix_smart_app.jsx</strong> once to open the floating UI panel, then click each button in order:</div>
+      <div class="workflow-steps">
+        <div class="wf-step"><div class="wf-icon"><svg><use href="#ic-sparkle"/></svg></div><div class="wf-label">Magic Fix</div><div class="wf-sub">Clean first</div></div>
+        <div class="wf-step"><div class="wf-icon"><svg><use href="#ic-type"/></svg></div><div class="wf-label">Text Cleanup</div><div class="wf-sub">Normalize type</div></div>
+        <div class="wf-step"><div class="wf-icon"><svg><use href="#ic-layers"/></svg></div><div class="wf-label">Smart Renditions</div><div class="wf-sub">Scale to all sizes</div></div>
+        <div class="wf-step"><div class="wf-icon"><svg><use href="#ic-clipboard"/></svg></div><div class="wf-label">QC Report</div><div class="wf-sub">Check quality</div></div>
+        <div class="wf-step"><div class="wf-icon"><svg><use href="#ic-upload"/></svg></div><div class="wf-label">Export PNG</div><div class="wf-sub">Final output</div></div>
       </div>
-      <div class="home-scripts-grid">
-        <div class="home-script-card" onclick="showPage('brix', getNav('brix'))">
-          <div class="card-top"><span class="card-num">01</span><h3>Smart Renditions</h3></div>
-          <p>Generates SM / L / XL artboard renditions scaled from the master MD artboard.</p>
-          <div class="arrow">View details →</div>
-        </div>
-        <div class="home-script-card" onclick="showPage('magicfix', getNav('magicfix'))">
-          <div class="card-top"><span class="card-num">02</span><h3>Magic Fix</h3></div>
-          <p>Full-document cleanup — fonts, strokes, spacing, artboard cropping, empty layer removal.</p>
-          <div class="arrow">View details →</div>
-        </div>
-        <div class="home-script-card" onclick="showPage('qc', getNav('qc'))">
-          <div class="card-top"><span class="card-num">03</span><h3>QC Report</h3></div>
-          <p>Scans the document and generates a detailed HTML quality-check report.</p>
-          <div class="arrow">View details →</div>
-        </div>
-        <div class="home-script-card" onclick="showPage('text', getNav('text'))">
-          <div class="card-top"><span class="card-num">04</span><h3>Text Cleanup</h3></div>
-          <p>Normalizes tracking, kerning, scale, baseline and rotation across all text frames.</p>
-          <div class="arrow">View details →</div>
-        </div>
-        <div class="home-script-card" onclick="showPage('export', getNav('export'))">
-          <div class="card-top"><span class="card-num">05</span><h3>Export PNG</h3></div>
-          <p>Exports all artboards as 300 DPI PNG24 files after cleaning empty layers and boards.</p>
-          <div class="arrow">View details →</div>
-        </div>
+    </div>
+
+    <div class="quickstart-grid">
+      <div class="qs-card" onclick="showPage('smartapp',getNav('smartapp'))">
+        <div class="qs-top"><span class="qs-num">UI</span><h3>Smart App Panel</h3></div>
+        <p>Launch the floating UI panel and run all 5 scripts with one click each — no File menu needed.</p>
+        <div class="qs-arrow">Learn more <svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+      <div class="qs-card" onclick="showPage('install',getNav('install'))">
+        <div class="qs-top"><span class="qs-num">START</span><h3>Installation</h3></div>
+        <p>Set up AutoPerfect in Illustrator in under 2 minutes.</p>
+        <div class="qs-arrow">Get started <svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+      <div class="qs-card" onclick="showPage('brix',getNav('brix'))">
+        <div class="qs-top"><span class="qs-num">01</span><h3>Smart Renditions</h3></div>
+        <p>Auto-generate SM / L / XL from your master MD artboard.</p>
+        <div class="qs-arrow">Learn more <svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+      <div class="qs-card" onclick="showPage('magicfix',getNav('magicfix'))">
+        <div class="qs-top"><span class="qs-num">02</span><h3>Magic Fix</h3></div>
+        <p>One-click full document cleanup and artboard crop.</p>
+        <div class="qs-arrow">Learn more <svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+      <div class="qs-card" onclick="showPage('qc',getNav('qc'))">
+        <div class="qs-top"><span class="qs-num">03</span><h3>QC Report</h3></div>
+        <p>Generate a detailed HTML report of all document issues.</p>
+        <div class="qs-arrow">Learn more <svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+      <div class="qs-card" onclick="showPage('text',getNav('text'))">
+        <div class="qs-top"><span class="qs-num">04</span><h3>Text Cleanup</h3></div>
+        <p>Reset tracking, kerning, scale and baseline in all text.</p>
+        <div class="qs-arrow">Learn more <svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+      </div>
+      <div class="qs-card" onclick="showPage('export',getNav('export'))">
+        <div class="qs-top"><span class="qs-num">05</span><h3>Export PNG</h3></div>
+        <p>Export all artboards as 300 DPI PNGs with one click.</p>
+        <div class="qs-arrow">Learn more <svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- ══════ SCRIPT 01 — SMART RENDITIONS ══════ -->
-  <div class="page" id="page-brix">
-    <div class="hero">
-      <div class="hero-eyebrow">⚡ Script 01</div>
-      <h2>Brix <span class="accent">Smart Renditions</span></h2>
-      <p class="hero-desc">Automates the creation of multi-size renditions (SM, MD, L, XL) from a single master MD artboard — scaled, cleaned, and cropped in one run.</p>
+<!-- ═══════════════════════ INSTALLATION ═══════════════════════ -->
+<div class="page" id="page-install">
+  <div class="hero">
+    <div class="hero-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>Getting Started</div>
+    <h2><span class="accent">Installation</span> Guide</h2>
+    <p class="hero-desc">Install AutoPerfect 2.0 into Adobe Illustrator in under 2 minutes. Works on Mac and Windows. No plugins, no internet required.</p>
+  </div>
+  <div class="content">
+    <div class="tags">
+      <span class="tag tag-purple">One-time Setup</span>
+      <span class="tag tag-green">Mac &amp; Windows</span>
+      <span class="tag tag-blue">Illustrator 2024–2026</span>
     </div>
-    <div class="content">
-      <div class="tags">
-        <span class="tag tag-purple">brixSmartRenditions.jsx</span>
-        <span class="tag tag-green">Non-destructive</span>
-        <span class="tag tag-blue">Auto-scale</span>
-        <span class="tag tag-yellow">4 Artboards</span>
-      </div>
+    <div class="success-box"><strong>Before you start:</strong> Make sure Adobe Illustrator is closed before copying the scripts folder. You only need to do this once — the scripts will then be available in every document.</div>
 
-      <div class="info-box">
-        <strong>In one sentence:</strong> Duplicates your MD master design to SM, L, and XL artboards at the correct proportional scale — with font rounding, stroke snapping, and tight artboard cropping applied automatically.
+    <div class="install-os-tabs">
+      <div class="os-tab active" onclick="switchOS('mac',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4z"/><path d="M8.5 10C5 10 2 14 2 18c0 2.2 1.8 4 4 4 1 0 2-.4 2.5-1l1-1c.5-.6 1.5-.6 2 0l1 1c.5.6 1.5 1 2.5 1 2.2 0 4-1.8 4-4 0-4-3-8-6.5-8z"/></svg>
+        macOS
       </div>
+      <div class="os-tab" onclick="switchOS('win',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="2" y1="12" x2="22" y2="12"/></svg>
+        Windows
+      </div>
+    </div>
 
-      <div class="section-label">How it works</div>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">01</div>
-          <div class="step-body">
-            <h4>Setup & Validation</h4>
-            <p>Checks that all four artboards named <span class="mono">SM</span>, <span class="mono">MD</span>, <span class="mono">L</span>, <span class="mono">XL</span> exist. Any missing layers are created automatically before anything else runs.</p>
+    <div class="os-content active" id="os-mac">
+      <div class="install-card">
+        <div class="install-card-header">
+          <div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a4 4 0 0 1 4 4 4 4 0 0 1-4 4 4 4 0 0 1-4-4 4 4 0 0 1 4-4z"/><path d="M8.5 10C5 10 2 14 2 18c0 2.2 1.8 4 4 4 1 0 2-.4 2.5-1l1-1c.5-.6 1.5-.6 2 0l1 1c.5.6 1.5 1 2.5 1 2.2 0 4-1.8 4-4 0-4-3-8-6.5-8z"/></svg></div>
+          <div><h3>macOS Installation</h3><p>Tested on macOS Ventura, Sonoma &amp; Sequoia</p></div>
+        </div>
+        <div class="install-steps">
+          <div class="install-step"><div class="is-num">1</div><div class="is-body"><h4>Download &amp; Unzip</h4><p>Click <strong>Download All Scripts</strong> in the sidebar. Double-click <span class="mono">AutoPerfect_2_0.zip</span> to extract it. You will see a folder called <span class="mono">AutoPerfect 2.0</span>.</p></div></div>
+          <div class="install-step"><div class="is-num">2</div><div class="is-body"><h4>Copy the Entire Folder</h4><p>Copy the <span class="mono">AutoPerfect 2.0</span> folder whole — do not rename it or extract individual scripts out of it.</p></div></div>
+          <div class="install-step"><div class="is-num">3</div><div class="is-body"><h4>Navigate to the Scripts Folder</h4><p>Open <strong>Finder</strong> and navigate to:</p><div class="path-block">Applications<span class="sep">›</span>Adobe Illustrator 2026<span class="sep">›</span>Presets<span class="sep">›</span>en_US<span class="sep">›</span>Scripts</div><p style="margin-top:8px;font-size:12.5px;color:var(--text-dim)">Tip: Right-click Adobe Illustrator in Applications → Show Package Contents, then navigate inside.</p></div></div>
+          <div class="install-step"><div class="is-num">4</div><div class="is-body"><h4>Paste the Folder Inside Scripts</h4><p>Paste <span class="mono">AutoPerfect 2.0</span> inside the <span class="mono">Scripts</span> directory. Final structure:</p><div class="path-block">Scripts<span class="sep">›</span>AutoPerfect 2.0<span class="sep">›</span>brixSmartRenditions.jsx<br>Scripts<span class="sep">›</span>AutoPerfect 2.0<span class="sep">›</span>MagicFix.jsx<br>Scripts<span class="sep">›</span>AutoPerfect 2.0<span class="sep">›</span>brix_QC_Unlocked.jsx<br>Scripts<span class="sep">›</span>AutoPerfect 2.0<span class="sep">›</span>text_cleanup.jsx<br>Scripts<span class="sep">›</span>AutoPerfect 2.0<span class="sep">›</span>exportPng.jsx</div></div></div>
+          <div class="install-step"><div class="is-num">5</div><div class="is-body"><h4>Open or Restart Illustrator</h4><p>Launch Adobe Illustrator (or fully quit and reopen if it was already running). Illustrator scans the Scripts folder on every startup.</p></div></div>
+          <div class="install-step"><div class="is-num">6</div><div class="is-body"><h4>Launch Any Script</h4><p>Open a <span class="mono">.ai</span> document, then go to:</p><div class="path-block">File<span class="sep">›</span>Scripts<span class="sep">›</span>AutoPerfect 2.0<span class="sep">›</span>[Script Name]</div><p style="margin-top:8px;font-size:12.5px;color:var(--text-dim)">All five scripts appear as a submenu under AutoPerfect 2.0.</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="os-content" id="os-win">
+      <div class="install-card">
+        <div class="install-card-header">
+          <div class="ic-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="2" y1="12" x2="22" y2="12"/></svg></div>
+          <div><h3>Windows Installation</h3><p>Tested on Windows 10 and Windows 11</p></div>
+        </div>
+        <div class="install-steps">
+          <div class="install-step"><div class="is-num">1</div><div class="is-body"><h4>Download &amp; Unzip</h4><p>Click <strong>Download All Scripts</strong> in the sidebar. Right-click <span class="mono">AutoPerfect_2_0.zip</span> → <em>Extract All</em>. You will see a folder called <span class="mono">AutoPerfect 2.0</span>.</p></div></div>
+          <div class="install-step"><div class="is-num">2</div><div class="is-body"><h4>Copy the Entire Folder</h4><p>Copy the <span class="mono">AutoPerfect 2.0</span> folder whole. Do not extract individual files out of it.</p></div></div>
+          <div class="install-step"><div class="is-num">3</div><div class="is-body"><h4>Navigate to the Scripts Folder</h4><p>Open <strong>File Explorer</strong> and navigate to:</p><div class="path-block">C:\Program Files\Adobe\Adobe Illustrator 2026\Presets\en_US\Scripts</div><p style="margin-top:8px;font-size:12.5px;color:var(--text-dim)">The year may vary — look for your installed version (2024, 2025, or 2026).</p></div></div>
+          <div class="install-step"><div class="is-num">4</div><div class="is-body"><h4>Paste the Folder Inside Scripts</h4><p>Paste <span class="mono">AutoPerfect 2.0</span> inside <span class="mono">Scripts</span>. Windows may ask for administrator permission — click <em>Continue</em>.</p></div></div>
+          <div class="install-step"><div class="is-num">5</div><div class="is-body"><h4>Open or Restart Illustrator</h4><p>Launch Illustrator. If it was already open, fully close and reopen it so it picks up the new scripts.</p></div></div>
+          <div class="install-step"><div class="is-num">6</div><div class="is-body"><h4>Launch Any Script</h4><p>Open a <span class="mono">.ai</span> document, then go to:</p><div class="path-block">File<span class="sep">›</span>Scripts<span class="sep">›</span>AutoPerfect 2.0<span class="sep">›</span>[Script Name]</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Verify installation</div>
+    <div class="verify-grid">
+      <div class="verify-card verify-good"><h4><svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Installed correctly</h4><p>You can see <strong>File → Scripts → AutoPerfect 2.0</strong> as a submenu with all 5 scripts listed inside it.</p></div>
+      <div class="verify-card verify-bad"><h4><svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Not showing up</h4><p>Illustrator wasn't fully restarted after copying. Fully quit (Cmd+Q / Alt+F4) and reopen it.</p></div>
+    </div>
+
+    <div class="section-label">Files included</div>
+    <table class="diff-table">
+      <thead><tr><th>File</th><th>Script</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td><span class="mono">brixSmartRenditions.jsx</span></td><td>Smart Renditions</td><td>Generate SM / L / XL from MD master</td></tr>
+        <tr><td><span class="mono">MagicFix.jsx</span></td><td>Magic Fix</td><td>Full document cleanup in one run</td></tr>
+        <tr><td><span class="mono">brix_QC_Unlocked.jsx</span></td><td>QC Report</td><td>Generate HTML quality-check report</td></tr>
+        <tr><td><span class="mono">text_cleanup.jsx</span></td><td>Text Cleanup</td><td>Normalize all text attributes</td></tr>
+        <tr><td><span class="mono">exportPng.jsx</span></td><td>Export PNG</td><td>Export all artboards at 300 DPI</td></tr>
+      </tbody>
+    </table>
+
+    <div class="warn-box"><strong>macOS security note:</strong> If macOS blocks the script, go to <strong>System Settings → Privacy &amp; Security</strong> and click "Allow Anyway" next to the blocked file. This is a standard Gatekeeper prompt for downloaded scripts.</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ HOW TO USE ═══════════════════════ -->
+<div class="page" id="page-usage">
+  <div class="hero">
+    <div class="hero-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>Usage Guide</div>
+    <h2>How to <span class="accent">Use AutoPerfect</span></h2>
+    <p class="hero-desc">A step-by-step guide to running each script in the right order for a complete production-ready workflow, from raw artwork to exported PNGs.</p>
+  </div>
+  <div class="content">
+    <div class="info-box"><strong>Before running any script:</strong> Save a backup of your .ai file. The scripts make direct edits — while carefully written to be safe, a backup is always good practice.</div>
+
+    <div class="success-box"><strong>How it works:</strong> You only need the File menu <strong>once</strong> — to launch the Brix Smart App panel. After that, the panel floats above Illustrator and you click each button directly from it to run all 5 scripts in order.</div>
+
+    <div class="section-label">Step 1 — Launch the Smart App Panel (once only)</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">→</div><div class="step-body"><h4>File → Scripts → AutoPerfect 2.0 → brix_smart_app</h4><p>This opens the Brix floating panel over Illustrator. It stays open until you close it. You only need to do this once per session — all 5 scripts are now accessible as buttons in the panel.</p><div class="path-block">File <span class="sep">›</span> Scripts <span class="sep">›</span> AutoPerfect 2.0 <span class="sep">›</span> brix_smart_app</div></div></div>
+    </div>
+
+    <div class="section-label">Step 2 — Click all 5 buttons in order</div>
+    <div class="usage-flow">
+      <div class="uf-row"><div class="uf-left"><div class="uf-circle"><svg><use href="#ic-sparkle"/></svg></div><div class="uf-line"></div></div>
+        <div class="uf-card"><h4>Click <span style="background:linear-gradient(135deg,var(--p600),var(--p400));color:#fff;padding:2px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;display:inline-block">FIX</span> — Magic Fix</h4><p>Cleans the entire document — removes empty text frames, fixes font sizes and stroke widths, trims all artboards to content. Confirm the dialog that appears. A summary alert shows when done.</p><span class="uf-script">MagicFix.jsx</span></div></div>
+
+      <div class="uf-row"><div class="uf-left"><div class="uf-circle"><svg><use href="#ic-type"/></svg></div><div class="uf-line"></div></div>
+        <div class="uf-card"><h4>Click <span style="background:linear-gradient(135deg,var(--p600),var(--p400));color:#fff;padding:2px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;display:inline-block">TXT</span> — Text Cleanup <span style="font-size:12px;font-weight:400;color:var(--text-dim)">(optional)</span></h4><p>A dialog appears — choose your tracking value (0, -10, or -25). Click the button. Resets scale, kerning, baseline, and rotation on all text frames.</p><span class="uf-script">text_cleanup.jsx</span></div></div>
+
+      <div class="uf-row"><div class="uf-left"><div class="uf-circle"><svg><use href="#ic-layers"/></svg></div><div class="uf-line"></div></div>
+        <div class="uf-card"><h4>Click <span style="background:linear-gradient(135deg,var(--p600),var(--p400));color:#fff;padding:2px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;display:inline-block">QR</span> — Quick Renditions</h4><p>Reads your cleaned MD artboard and generates proportionally scaled versions on SM, L, and XL artboards. No dialog — runs immediately and completes silently.</p><span class="uf-script">brixSmartRenditions.jsx</span></div></div>
+
+      <div class="uf-row"><div class="uf-left"><div class="uf-circle"><svg><use href="#ic-clipboard"/></svg></div><div class="uf-line"></div></div>
+        <div class="uf-card"><h4>Click <span style="background:linear-gradient(135deg,var(--p600),var(--p400));color:#fff;padding:2px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;display:inline-block">QC</span> — QC Unlocked</h4><p>On first run, enter your name when prompted (saved for future runs). Saves a <span class="mono">_QC_Report.html</span> file next to your .ai and opens it in the browser. Review all flagged issues before exporting.</p><span class="uf-script">brix_QC_Unlocked.jsx</span></div></div>
+
+      <div class="uf-row"><div class="uf-left"><div class="uf-circle"><svg><use href="#ic-upload"/></svg></div></div>
+        <div class="uf-card"><h4>Click <span style="background:linear-gradient(135deg,var(--p600),var(--p400));color:#fff;padding:2px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;display:inline-block">PNG's</span> — Export PNGs</h4><p>Confirm the dialog. Removes remaining empty layers/artboards, then exports all artboards as 300 DPI transparent PNGs to the same folder as your .ai file.</p><span class="uf-script">exportPng.jsx</span></div></div>
+    </div>
+
+    <div class="section-label">Artboard naming — required</div>
+    <div class="warn-box"><strong>Important:</strong> Smart Renditions requires artboards named exactly <span class="mono">SM</span>, <span class="mono">MD</span>, <span class="mono">L</span>, <span class="mono">XL</span> in uppercase. Names are case-sensitive. If any artboard is missing, the script stops without changes.</div>
+    <table class="diff-table">
+      <thead><tr><th>Name</th><th>Role</th><th>Required by</th></tr></thead>
+      <tbody>
+        <tr><td><span class="mono">MD</span></td><td>Master artboard — all design work goes here</td><td>Smart Renditions</td></tr>
+        <tr><td><span class="mono">SM</span></td><td>Small rendition — scaled down from MD</td><td>Smart Renditions</td></tr>
+        <tr><td><span class="mono">L</span></td><td>Large rendition — scaled up from MD</td><td>Smart Renditions</td></tr>
+        <tr><td><span class="mono">XL</span></td><td>Extra-large rendition — scaled up from MD</td><td>Smart Renditions</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SCRIPT 01 ═══════════════════════ -->
+<div class="page" id="page-brix">
+  <div class="hero">
+    <div class="hero-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>Script 01</div>
+    <h2>Smart <span class="accent">Renditions</span></h2>
+    <p class="hero-desc">Generates SM, L, and XL artboard renditions proportionally scaled from the master MD artboard — cleaned, snapped, and cropped automatically.</p>
+  </div>
+  <div class="content">
+    <div class="tags"><span class="tag tag-purple">brixSmartRenditions.jsx</span><span class="tag tag-green">Non-destructive</span><span class="tag tag-blue">Auto-scale</span><span class="tag tag-yellow">4 Artboards</span></div>
+    <div class="info-box"><strong>In one sentence:</strong> Duplicates your MD master to SM, L, and XL artboards at the correct proportional scale — with font rounding, stroke snapping, and tight artboard cropping applied automatically.</div>
+
+    <div class="section-label">How to run</div>
+    <div class="steps"><div class="step"><div class="step-icon"><svg><use href="#ic-play"/></svg></div><div class="step-body"><h4>Open the Smart App Panel → click <span style="background:linear-gradient(135deg,var(--p600),var(--p400));color:#fff;padding:3px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700">QR</span></h4><p>Launch the Brix Smart App panel first (File → Scripts → AutoPerfect 2.0 → brix_smart_app), then click the <strong>QR</strong> button. No dialog — the script runs immediately and silently. All three target artboards will contain scaled versions of your MD artwork when it finishes.</p></div></div></div>
+
+    <div class="section-label">What it does</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">01</div><div class="step-body"><h4>Setup &amp; Validation</h4><p>Checks that artboards <span class="mono">SM</span>, <span class="mono">MD</span>, <span class="mono">L</span>, <span class="mono">XL</span> all exist. Creates any missing layers. Stops if an artboard is missing.</p></div></div>
+      <div class="step"><div class="step-num">02</div><div class="step-body"><h4>Empty Text Frame Cleanup</h4><p>Removes any text frames that are blank or contain only whitespace across the entire document.</p></div></div>
+      <div class="step"><div class="step-num">03</div><div class="step-body"><h4>MD Master Cleanup</h4><p>Removes double-spaces, trims leading/trailing spaces, rounds font sizes to whole numbers (min 10pt), snaps stroke widths.</p></div></div>
+      <div class="step"><div class="step-num">04</div><div class="step-body"><h4>Move &amp; Crop MD</h4><p>Shifts all MD content flush to the artboard top and trims artboard height to fit the content exactly.</p></div></div>
+      <div class="step"><div class="step-num">05</div><div class="step-body"><h4>Generate SM / L / XL</h4><p>Duplicates MD content to each target layer. Scales by width ratio. Re-rounds fonts (SM: 8pt min, L/XL: 12pt min) and re-snaps strokes after scaling.</p></div></div>
+      <div class="step"><div class="step-num">06</div><div class="step-body"><h4>Align &amp; Crop Each Rendition</h4><p>Centers content horizontally, aligns to artboard top, trims artboard height to content — ready for export.</p></div></div>
+    </div>
+
+    <div class="section-label">Font minimums per artboard</div>
+    <table class="diff-table">
+      <thead><tr><th>Artboard</th><th>Minimum Font Size</th></tr></thead>
+      <tbody>
+        <tr><td><span class="mono">SM</span></td><td>8 pt</td></tr>
+        <tr><td><span class="mono">MD</span> (master)</td><td>10 pt</td></tr>
+        <tr><td><span class="mono">L</span></td><td>12 pt</td></tr>
+        <tr><td><span class="mono">XL</span></td><td>12 pt</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Key capabilities</div>
+    <div class="feature-grid">
+      <div class="feature-card"><div class="card-icon ci-purple"><svg><use href="#ic-scale"/></svg></div><h3>Proportional Scaling</h3><p>Uses each artboard's width-to-MD-width ratio. No distortion, no guessing.</p></div>
+      <div class="feature-card"><div class="card-icon ci-green"><svg><use href="#ic-fontsize"/></svg></div><h3>Font Rounding</h3><p>Rounds every character's font size to a whole number after scaling, enforcing per-artboard minimums.</p></div>
+      <div class="feature-card"><div class="card-icon ci-blue"><svg><use href="#ic-pen"/></svg></div><h3>Stroke Snapping</h3><p>Cleans sub-pixel stroke widths to 0.25, 0.5, 0.75, or whole integers after scaling.</p></div>
+      <div class="feature-card"><div class="card-icon ci-yellow"><svg><use href="#ic-crop"/></svg></div><h3>Auto Artboard Crop</h3><p>Trims artboard height to the exact content boundary on all four boards — ready for export.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SCRIPT 02 ═══════════════════════ -->
+<div class="page" id="page-magicfix">
+  <div class="hero">
+    <div class="hero-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>Script 02</div>
+    <h2>Magic <span class="accent">Fix</span></h2>
+    <p class="hero-desc">A comprehensive in-place cleanup that fixes every artboard — fonts, strokes, spacing, content alignment, and empty layer removal — in a single run.</p>
+  </div>
+  <div class="content">
+    <div class="tags"><span class="tag tag-purple">MagicFix.jsx</span><span class="tag tag-green">All Artboards</span><span class="tag tag-blue">In-place Cleanup</span><span class="tag tag-red">No Duplication</span></div>
+    <div class="info-box"><strong>Key difference from Smart Renditions:</strong> Magic Fix cleans all existing artboards in place. It does not duplicate or scale content — it is a cleanup-only tool, safe to run at any stage.</div>
+
+    <div class="section-label">How to run</div>
+    <div class="steps"><div class="step"><div class="step-icon"><svg><use href="#ic-play"/></svg></div><div class="step-body"><h4>Open the Smart App Panel → click <span style="background:linear-gradient(135deg,var(--p600),var(--p400));color:#fff;padding:3px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700">FIX</span></h4><p>Launch the Brix Smart App panel first (File → Scripts → AutoPerfect 2.0 → brix_smart_app), then click the <strong>FIX</strong> button. A confirmation dialog appears — click OK. A summary alert shows at the end listing any removed empty layers.</p></div></div></div>
+
+    <div class="section-label">What it does</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">01</div><div class="step-body"><h4>Enable Scale Corners</h4><p>Turns on Illustrator's Scale Corners preference so rounded corners behave correctly on resized items.</p></div></div>
+      <div class="step"><div class="step-num">02</div><div class="step-body"><h4>Global Empty Text Frame Removal</h4><p>Deletes blank or whitespace-only text frames across the entire document. Skips locked and hidden layers.</p></div></div>
+      <div class="step"><div class="step-num">03</div><div class="step-body"><h4>Text Spacing Cleanup (per artboard)</h4><p>Removes consecutive double-spaces and trims leading/trailing spaces character-by-character, preserving all mixed font style runs.</p></div></div>
+      <div class="step"><div class="step-num">04</div><div class="step-body"><h4>Font Size Enforcement (per artboard)</h4><p>Custom rounding rule — fractions below 0.6 round down, 0.6+ round up. Enforces per-artboard minimums. Only writes values when a change is needed.</p></div></div>
+      <div class="step"><div class="step-num">05</div><div class="step-body"><h4>Stroke Width Snapping (per artboard)</h4><p>Snaps all strokes to 0.25, 0.5, 0.75, or the nearest whole number.</p></div></div>
+      <div class="step"><div class="step-num">06</div><div class="step-body"><h4>Second Empty Frame Pass</h4><p>Re-checks for text frames that became empty after the space cleanup step and removes them.</p></div></div>
+      <div class="step"><div class="step-num">07</div><div class="step-body"><h4>Move Content to Top &amp; Crop</h4><p>Shifts all content flush to the artboard top, then resizes the artboard bottom to fit content height exactly.</p></div></div>
+      <div class="step"><div class="step-num">08</div><div class="step-body"><h4>Remove Empty Layers</h4><p>Recursively checks every layer and removes completely empty ones. Their names are listed in the final alert.</p></div></div>
+    </div>
+
+    <div class="section-label">Custom rounding logic</div>
+    <table class="diff-table">
+      <thead><tr><th>Fraction</th><th>Rule</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>Below 0.6</td><td>Round down (floor)</td><td>11.4 → 11</td></tr>
+        <tr><td>0.6 or above</td><td>Round up (ceil)</td><td>11.7 → 12</td></tr>
+        <tr><td>Whole number</td><td>No change</td><td>12.0 → 12</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SCRIPT 03 ═══════════════════════ -->
+<div class="page" id="page-qc">
+  <div class="hero">
+    <div class="hero-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Script 03</div>
+    <h2>QC <span class="accent">Report</span></h2>
+    <p class="hero-desc">Scans the entire document and generates a detailed, styled HTML quality-check report — identifying font, spacing, stroke, swatch, and bounds issues per artboard.</p>
+  </div>
+  <div class="content">
+    <div class="tags"><span class="tag tag-purple">brix_QC_Unlocked.jsx</span><span class="tag tag-blue">HTML Report</span><span class="tag tag-green">Read-only scan</span><span class="tag tag-yellow">Saves to Disk</span></div>
+    <div class="success-box"><strong>Non-destructive:</strong> This script makes absolutely no changes to your Illustrator document. It only reads and reports.</div>
+
+    <div class="section-label">How to run</div>
+    <div class="steps"><div class="step"><div class="step-icon"><svg><use href="#ic-play"/></svg></div><div class="step-body"><h4>Open the Smart App Panel → click <span style="background:linear-gradient(135deg,var(--p600),var(--p400));color:#fff;padding:3px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700">QC</span></h4><p>Launch the Brix Smart App panel first (File → Scripts → AutoPerfect 2.0 → brix_smart_app), then click the <strong>QC</strong> button. On first run, a prompt asks for your name (saved permanently at <span class="mono">userData/Illustrator_QC_User.txt</span>). The script scans the document, saves <span class="mono">DocumentName_QC_Report.html</span> next to your .ai file, and opens it in your browser automatically.</p></div></div></div>
+
+    <div class="section-label">Issues detected</div>
+    <div class="issue-badges">
+      <div class="issue-badge"><div class="ib-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></div><div class="ib-name">Decimal Font Sizes</div><div class="ib-desc">Fonts not rounded to whole numbers</div></div>
+      <div class="issue-badge"><div class="ib-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg></div><div class="ib-name">Double Spaces</div><div class="ib-desc">Extra spaces with position markers</div></div>
+      <div class="issue-badge"><div class="ib-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="ib-name">Small Fonts</div><div class="ib-desc">Any character below 8pt minimum</div></div>
+      <div class="issue-badge"><div class="ib-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p500)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><circle cx="11" cy="11" r="2"/></svg></div><div class="ib-name">Bad Stroke Widths</div><div class="ib-desc">Strokes not snapped to valid values</div></div>
+      <div class="issue-badge"><div class="ib-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg></div><div class="ib-name">Outside Artboard</div><div class="ib-desc">Objects bleeding beyond artboard bounds</div></div>
+      <div class="issue-badge"><div class="ib-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/><line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/><line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/><line x1="4.93" y1="19.07" x2="9.17" y2="14.83"/></svg></div><div class="ib-name">Bad Swatch Names</div><div class="ib-desc">Auto-named swatches like "New Swatch"</div></div>
+    </div>
+
+    <div class="section-label">How to read the report</div>
+    <div class="feature-grid">
+      <div class="feature-card"><div class="card-icon ci-purple"><svg><use href="#ic-list"/></svg></div><h3>Summary Dashboard</h3><p>Top of the report. Total artboards, artboards with issues, and total swatch problems at a glance.</p></div>
+      <div class="feature-card"><div class="card-icon ci-blue"><svg><use href="#ic-clipboard"/></svg></div><h3>Per-Artboard Sections</h3><p>Only artboards with issues appear. Each section has badge counts for all 5 issue categories.</p></div>
+      <div class="feature-card"><div class="card-icon ci-green"><svg><use href="#ic-target"/></svg></div><h3>Contextual Highlights</h3><p>Double-space position shown with character index. Bad font-size words highlighted in red within their sentence.</p></div>
+      <div class="feature-card"><div class="card-icon ci-yellow"><svg><use href="#ic-file"/></svg></div><h3>Swatch Issues</h3><p>Lists all unnamed or auto-named swatches needing proper names before final handoff.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SCRIPT 04 ═══════════════════════ -->
+<div class="page" id="page-text">
+  <div class="hero">
+    <div class="hero-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>Script 04</div>
+    <h2>Text <span class="accent">Normalization</span></h2>
+    <p class="hero-desc">Resets all text attributes across every text frame — tracking, kerning, scale, baseline shift, and character rotation — via a quick dialog.</p>
+  </div>
+  <div class="content">
+    <div class="tags"><span class="tag tag-purple">text_cleanup.jsx</span><span class="tag tag-green">Quick Dialog</span><span class="tag tag-blue">Style Preservation</span><span class="tag tag-yellow">Character-level</span></div>
+
+    <div class="section-label">How to run</div>
+    <div class="steps"><div class="step"><div class="step-icon"><svg><use href="#ic-play"/></svg></div><div class="step-body"><h4>Open the Smart App Panel → click <span style="background:linear-gradient(135deg,var(--p600),var(--p400));color:#fff;padding:3px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700">TXT</span></h4><p>Launch the Brix Smart App panel first (File → Scripts → AutoPerfect 2.0 → brix_smart_app), then click the <strong>TXT</strong> button. A dialog appears with three tracking options — click your choice. A summary alert shows how many frames were processed.</p></div></div></div>
+
+    <div class="section-label">Tracking options</div>
+    <table class="diff-table">
+      <thead><tr><th>Button</th><th>Value</th><th>Best for</th></tr></thead>
+      <tbody>
+        <tr><td>Set Tracking 0</td><td>0</td><td>Standard / reset to default spacing</td></tr>
+        <tr><td>Set Tracking -10</td><td>-10</td><td>Slightly tighter — medium-sized body text</td></tr>
+        <tr><td>Set Tracking -25</td><td>-25</td><td>Tight tracking — large display or headline text</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">What gets reset on every character</div>
+    <div class="feature-grid">
+      <div class="feature-card"><div class="card-icon ci-purple"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><line x1="12" y1="5" x2="12" y2="19"/></svg></div><h3>Tracking</h3><p>Sets letter-spacing to your chosen value on every character individually.</p></div>
+      <div class="feature-card"><div class="card-icon ci-green"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div><h3>Scale Reset</h3><p>Both horizontal and vertical character scale restored to exactly 100%.</p></div>
+      <div class="feature-card"><div class="card-icon ci-blue"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="4"/><polyline points="6 10 12 4 18 10"/></svg></div><h3>Baseline Shift</h3><p>Any baseline offset zeroed out across all characters.</p></div>
+      <div class="feature-card"><div class="card-icon ci-yellow"><svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></div><h3>Character Rotation</h3><p>Individual character rotation reset to 0° — removes any per-character tilt.</p></div>
+      <div class="feature-card"><div class="card-icon ci-pink"><svg viewBox="0 0 24 24" fill="none" stroke="#9d174d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h10"/></svg></div><h3>Kerning → Auto</h3><p>Forces <span class="mono">AutoKernType.AUTO</span> on every character — removes all manual or optical overrides.</p></div>
+    </div>
+
+    <div class="section-label">Important notes</div>
+    <ul class="check-list">
+      <li><div class="chk"><svg><use href="#ic-check"/></svg></div>Processes every text frame on every layer — no per-artboard filter.</li>
+      <li><div class="chk"><svg><use href="#ic-check"/></svg></div>Font size, family, color, and weight are <strong>not</strong> changed — only the 5 attributes above.</li>
+      <li><div class="chk"><svg><use href="#ic-check"/></svg></div>Mixed-style runs are preserved — operates character-by-character.</li>
+      <li><div class="chk"><svg><use href="#ic-check"/></svg></div>Performs two redraws to ensure Illustrator commits all changes visually.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SCRIPT 05 ═══════════════════════ -->
+<div class="page" id="page-export">
+  <div class="hero">
+    <div class="hero-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>Script 05</div>
+    <h2>Export <span class="accent">PNG</span></h2>
+    <p class="hero-desc">Cleans up empty layers and artboards, then exports every remaining artboard as a transparent 300 DPI PNG24 — named, saved, and done in one click.</p>
+  </div>
+  <div class="content">
+    <div class="tags"><span class="tag tag-purple">exportPng.jsx</span><span class="tag tag-green">300 DPI</span><span class="tag tag-blue">PNG24 Transparent</span><span class="tag tag-yellow">Auto-named</span></div>
+    <div class="warn-box"><strong>Requirement:</strong> The document must be saved before running. The script uses the document's save location as the export destination.</div>
+
+    <div class="section-label">How to run</div>
+    <div class="steps"><div class="step"><div class="step-icon"><svg><use href="#ic-play"/></svg></div><div class="step-body"><h4>Open the Smart App Panel → click <span style="background:linear-gradient(135deg,var(--p600),var(--p400));color:#fff;padding:3px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700">PNG's</span></h4><p>Launch the Brix Smart App panel first (File → Scripts → AutoPerfect 2.0 → brix_smart_app), then click the <strong>PNG's</strong> button. A confirmation dialog appears — click OK. The script cleans, exports all artboards, saves the document, then shows a completion alert or lists any artboards that failed.</p></div></div></div>
+
+    <div class="section-label">What it does</div>
+    <div class="steps">
+      <div class="step"><div class="step-num">01</div><div class="step-body"><h4>Confirm Dialog</h4><p>"Deleting empty Layers and Artboards. Confirm?" — Cancel exits cleanly without any changes.</p></div></div>
+      <div class="step"><div class="step-num">02</div><div class="step-body"><h4>Delete Empty Layers</h4><p>Recursively removes all layers and sub-layers with no page items. Skips locked or hidden layers.</p></div></div>
+      <div class="step"><div class="step-num">03</div><div class="step-body"><h4>Delete Empty Artboards</h4><p>Checks each artboard for visible content via bounds overlap detection. Removes artboards with no content.</p></div></div>
+      <div class="step"><div class="step-num">04</div><div class="step-body"><h4>Export Each Artboard as PNG24</h4><p>Sets active artboard, constructs the filename, exports with artboard clipping, transparency, and anti-aliasing at 300 DPI.</p></div></div>
+      <div class="step"><div class="step-num">05</div><div class="step-body"><h4>File Naming</h4><p>Single artboard: <span class="mono">DocumentName.png</span>. Multiple: <span class="mono">DocumentName ArtboardName.png</span>. Default "Artboard" names are excluded from the filename.</p></div></div>
+      <div class="step"><div class="step-num">06</div><div class="step-body"><h4>Save &amp; Report</h4><p>Saves the Illustrator file after export. Shows a completion alert or lists any artboards that failed with error details.</p></div></div>
+    </div>
+
+    <div class="section-label">Export settings</div>
+    <table class="diff-table">
+      <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Format</td><td>PNG24</td></tr>
+        <tr><td>Resolution</td><td>300 DPI (417% scale from 72 DPI base)</td></tr>
+        <tr><td>Transparency</td><td>Enabled</td></tr>
+        <tr><td>Anti-aliasing</td><td>Enabled</td></tr>
+        <tr><td>Artboard clipping</td><td>Enabled</td></tr>
+        <tr><td>Output location</td><td>Same folder as the .ai document</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════ TIPS ═══════════════════════ -->
+<div class="page" id="page-tips">
+  <div class="hero">
+    <div class="hero-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>Best Practices</div>
+    <h2>Tips &amp; <span class="accent">Best Practices</span></h2>
+    <p class="hero-desc">Get the most out of AutoPerfect with these workflow tips, dos and don'ts, and reference tables for strokes and swatches.</p>
+  </div>
+  <div class="content">
+    <div class="section-label">Workflow dos and don'ts</div>
+    <div class="tip-grid">
+      <div class="tip-card tip-do">
+        <h4><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Do</h4>
+        <ul>
+          <li>Name artboards exactly <span class="mono" style="font-size:10.5px">SM</span>, <span class="mono" style="font-size:10.5px">MD</span>, <span class="mono" style="font-size:10.5px">L</span>, <span class="mono" style="font-size:10.5px">XL</span> in uppercase</li>
+          <li>Design all artwork on the MD artboard only</li>
+          <li>Keep each artboard on its own matching layer</li>
+          <li>Save your file before running any script</li>
+          <li>Back up your .ai file the first time you run</li>
+          <li>Run Magic Fix before Smart Renditions</li>
+        </ul>
+      </div>
+      <div class="tip-card tip-dont">
+        <h4><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Don't</h4>
+        <ul>
+          <li>Mix case in artboard names ("sm" or "Sm" will fail)</li>
+          <li>Place content manually on SM, L, or XL layers — Smart Renditions will overwrite them</li>
+          <li>Run Smart Renditions twice — it reads MD as source every time</li>
+          <li>Rename the .jsx files — the File menu uses the filename as the display name</li>
+          <li>Run Export PNG on an unsaved document</li>
+        </ul>
+      </div>
+      <div class="tip-card tip-info">
+        <h4><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>Pro Tips</h4>
+        <ul>
+          <li>Run QC Report after Smart Renditions to catch any scaling artefacts</li>
+          <li>Run Text Cleanup before Smart Renditions if your type has inconsistent tracking</li>
+          <li>Magic Fix is safe to run multiple times — it won't double-process clean documents</li>
+          <li>Assign scripts to Illustrator Actions with keyboard shortcuts for faster access</li>
+          <li>The QC report is saved as HTML — open it anytime from the same folder as your .ai</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-label">Swatch naming guide</div>
+    <div class="info-box">The QC script flags swatches with auto-generated names. Rename your swatches before running to get a clean report. Good names are human-readable and describe the colour's role.</div>
+    <table class="diff-table">
+      <thead><tr><th>Bad swatch name (flagged)</th><th>Good swatch name</th></tr></thead>
+      <tbody>
+        <tr><td><span class="mono">New Swatch</span></td><td><span class="mono">Brand Purple</span></td></tr>
+        <tr><td><span class="mono">C=75 M=68 Y=0 K=0</span></td><td><span class="mono">Primary Blue</span></td></tr>
+        <tr><td><span class="mono">R=255 G=99 B=71</span></td><td><span class="mono">Alert Red</span></td></tr>
+        <tr><td><span class="mono">#F5F3FF</span></td><td><span class="mono">Background Lavender</span></td></tr>
+        <tr><td><span class="mono">Swatch 3</span></td><td><span class="mono">Text Dark</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Valid stroke width reference</div>
+    <div class="info-box">Both Magic Fix and Smart Renditions snap stroke widths to these values. Strokes outside these values are rounded to the nearest one.</div>
+    <table class="diff-table">
+      <thead><tr><th>Valid Value</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>0.25 pt</td><td>Hairline — thinnest recommended stroke</td></tr>
+        <tr><td>0.5 pt</td><td>Light stroke</td></tr>
+        <tr><td>0.75 pt</td><td>Medium-light stroke</td></tr>
+        <tr><td>1 pt, 2 pt, 3 pt… (whole numbers)</td><td>Standard strokes — any whole number is valid</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Performance tips</div>
+    <ul class="check-list">
+      <li><div class="chk"><svg><use href="#ic-check"/></svg></div>Close other open documents before running Smart Renditions on complex files to free up memory.</li>
+      <li><div class="chk"><svg><use href="#ic-check"/></svg></div>Embed linked images before Export PNG to avoid broken links in the output files.</li>
+      <li><div class="chk"><svg><use href="#ic-check"/></svg></div>For large files (100+ items per artboard), allow 10–30 seconds for Smart Renditions — it processes every character individually.</li>
+      <li><div class="chk"><svg><use href="#ic-check"/></svg></div>The QC Report script is read-only and fast — safe to run as many times as needed during a project.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════════════ TROUBLESHOOT ═══════════════════════ -->
+<div class="page" id="page-troubleshoot">
+  <div class="hero">
+    <div class="hero-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Support</div>
+    <h2><span class="accent">Troubleshooting</span></h2>
+    <p class="hero-desc">Solutions to the most common issues encountered when installing or running AutoPerfect scripts.</p>
+  </div>
+  <div class="content">
+
+    <div class="section-label">Installation issues</div>
+    <div class="steps">
+      <div class="step"><div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="step-body"><h4>Scripts don't appear under File → Scripts</h4><p>The most common cause is that Illustrator wasn't fully restarted. Fully quit Illustrator (Cmd+Q on Mac / Alt+F4 on Windows) and reopen it. Also verify the <span class="mono">AutoPerfect 2.0</span> folder is directly inside <span class="mono">Scripts</span>, not inside a nested subfolder.</p></div></div>
+      <div class="step"><div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="step-body"><h4>macOS security warning blocks the script</h4><p>Go to <strong>System Settings → Privacy &amp; Security</strong>. Scroll to the Security section — click <em>Allow Anyway</em> next to the blocked file. Then run the script again and click <em>Open</em>.</p></div></div>
+      <div class="step"><div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="step-body"><h4>Windows asks for administrator permission</h4><p>This is normal for the <span class="mono">Program Files</span> directory. Click <em>Continue</em>. If you don't have admin rights, ask your IT administrator or run Illustrator as Administrator.</p></div></div>
+    </div>
+
+    <div class="section-label">Runtime issues</div>
+    <div class="steps">
+      <div class="step"><div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="step-body"><h4>Smart Renditions stops without doing anything</h4><p>The script requires all four artboards named exactly <span class="mono">SM</span>, <span class="mono">MD</span>, <span class="mono">L</span>, and <span class="mono">XL</span> in uppercase. Check the Artboards panel and rename any that are different (e.g. "sm", "Artboard 1").</p></div></div>
+      <div class="step"><div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="step-body"><h4>Export PNG says "Please save the document first"</h4><p>Use <span class="mono">File → Save</span> (Cmd/Ctrl+S) then run the script again. The export script needs a saved file to determine the output folder.</p></div></div>
+      <div class="step"><div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="step-body"><h4>QC Report doesn't open in the browser</h4><p>The HTML file is still saved — look for <span class="mono">DocumentName_QC_Report.html</span> in the same folder as your .ai file and double-click to open it manually.</p></div></div>
+      <div class="step"><div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="step-body"><h4>Text Cleanup dialog disappears immediately</h4><p>This is an ExtendScript timing issue on some systems. Click elsewhere in Illustrator to ensure focus is on the app, then run the script again.</p></div></div>
+      <div class="step"><div class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="step-body"><h4>Magic Fix is very slow on a large document</h4><p>Magic Fix operates character-by-character. Large files with many text frames may take 30–60 seconds. Do not click or interrupt Illustrator — wait for the completion alert.</p></div></div>
+    </div>
+
+    <div class="section-label">Quick checklist before escalating</div>
+    <ul class="check-list">
+      <li><div class="chk"><svg><use href="#ic-check"/></svg></div>Is Illustrator fully updated to the latest version?</li>
+      <li><div class="chk"><svg><use href="#ic-check"/></svg></div>Was the document saved before running the script?</li>
+      <li><div class="chk"><svg><use href="#ic-check"/></svg></div>Are all four artboards named SM, MD, L, XL in uppercase?</li>
+      <li><div class="chk"><svg><use href="#ic-check"/></svg></div>Was Illustrator fully restarted after installation?</li>
+      <li><div class="chk"><svg><use href="#ic-check"/></svg></div>Does the document have at least one artboard and one visible page item?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SMART APP PANEL ═══════════════════════ -->
+<div class="page" id="page-smartapp">
+  <div class="hero">
+    <div class="hero-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="3" y1="9" x2="21" y2="9"/><circle cx="7.5" cy="6" r="1" fill="var(--p600)" stroke="none"/><circle cx="12" cy="6" r="1" fill="var(--p600)" stroke="none"/><circle cx="16.5" cy="6" r="1" fill="var(--p600)" stroke="none"/></svg>Smart App Panel</div>
+    <h2>The <span class="accent">Smart App Panel</span></h2>
+    <p class="hero-desc">A floating UI panel that puts all five AutoPerfect scripts a single click away — no File menu navigation needed. Launch it once and it stays open while you work.</p>
+  </div>
+  <div class="content">
+    <div class="tags">
+      <span class="tag tag-purple">brix_smart_app.jsx</span>
+      <span class="tag tag-green">Floating Panel</span>
+      <span class="tag tag-blue">One-click Launch</span>
+      <span class="tag tag-yellow">Stays Open</span>
+    </div>
+
+    <div class="success-box"><strong>This is the recommended way to use AutoPerfect.</strong> Instead of navigating to File → Scripts every time, you launch the Smart App once and all five script buttons are right in front of you — with labels so you always know what each button does.</div>
+
+    <!-- PANEL MOCKUP -->
+    <div class="section-label">What the panel looks like</div>
+    <div style="background:linear-gradient(135deg,#2d1f5a,#1a0d3a);border-radius:16px;padding:28px 32px;margin-bottom:32px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;box-shadow:0 8px 32px rgba(0,0,0,.2)">
+      <!-- Logo area -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
+        <div style="background:linear-gradient(135deg,var(--p600),var(--p400));width:100px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center">
+          <span style="color:#fff;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px">BRIX</span>
+        </div>
+        <span style="color:#555;font-size:10px">Developed for Brix</span>
+      </div>
+      <!-- Buttons -->
+      <div style="display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#5a3e8a,#7c5bbf);border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer;border:1px solid rgba(255,255,255,.12)">
+            <span style="color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700">QR</span>
           </div>
+          <span style="color:#ccc;font-size:9.5px;text-align:center;max-width:54px;line-height:1.3">Quick Renditions</span>
         </div>
-        <div class="step">
-          <div class="step-num">02</div>
-          <div class="step-body">
-            <h4>Empty Text Frame Cleanup</h4>
-            <p>Scans every text frame across the entire document and removes any that contain only whitespace, non-breaking spaces, or are completely blank.</p>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#5a3e8a,#7c5bbf);border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer;border:1px solid rgba(255,255,255,.12)">
+            <span style="color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700">FIX</span>
           </div>
+          <span style="color:#ccc;font-size:9.5px;text-align:center;max-width:54px;line-height:1.3">Magic Fix</span>
         </div>
-        <div class="step">
-          <div class="step-num">03</div>
-          <div class="step-body">
-            <h4>MD Master Artboard Cleanup</h4>
-            <p>Removes double-spaces and trims leading/trailing spaces character-by-character. Rounds all font sizes to whole numbers enforcing a <strong>10pt minimum</strong>. Snaps all stroke widths to clean values.</p>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#5a3e8a,#7c5bbf);border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer;border:1px solid rgba(255,255,255,.12)">
+            <span style="color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700">QC</span>
           </div>
+          <span style="color:#ccc;font-size:9.5px;text-align:center;max-width:54px;line-height:1.3">QC Unlocked</span>
         </div>
-        <div class="step">
-          <div class="step-num">04</div>
-          <div class="step-body">
-            <h4>Move & Crop MD</h4>
-            <p>Shifts all content flush to the top of the MD artboard, then trims the artboard height to exactly fit the content — no whitespace below.</p>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#5a3e8a,#7c5bbf);border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer;border:1px solid rgba(255,255,255,.12)">
+            <span style="color:#fff;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700">TXT</span>
           </div>
+          <span style="color:#ccc;font-size:9.5px;text-align:center;max-width:54px;line-height:1.3">Text Cleanup</span>
         </div>
-        <div class="step">
-          <div class="step-num">05</div>
-          <div class="step-body">
-            <h4>Generate SM / L / XL Renditions</h4>
-            <p>Duplicates all MD content into each target layer and scales it proportionally based on the ratio of each artboard's width to MD's width. Fonts are re-rounded with per-size minimums (SM: 8pt, L/XL: 12pt). Strokes are re-snapped.</p>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+          <div style="width:52px;height:52px;background:linear-gradient(135deg,#5a3e8a,#7c5bbf);border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer;border:1px solid rgba(255,255,255,.12)">
+            <span style="color:#fff;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700">PNG's</span>
           </div>
-        </div>
-        <div class="step">
-          <div class="step-num">06</div>
-          <div class="step-body">
-            <h4>Align & Crop Each Rendition</h4>
-            <p>Centers content horizontally, aligns to the top edge, and crops each artboard height to fit the scaled content tightly — ready for export.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-label">Font size minimums</div>
-      <table class="diff-table">
-        <thead><tr><th>Artboard</th><th>Minimum Font Size</th></tr></thead>
-        <tbody>
-          <tr><td>SM</td><td>8 pt</td></tr>
-          <tr><td>MD (master)</td><td>10 pt</td></tr>
-          <tr><td>L</td><td>12 pt</td></tr>
-          <tr><td>XL</td><td>12 pt</td></tr>
-        </tbody>
-      </table>
-
-      <div class="section-label">Key capabilities</div>
-      <div class="feature-grid">
-        <div class="feature-card">
-          <div class="card-icon icon-purple">🎯</div>
-          <h3>Proportional Scaling</h3>
-          <p>Uses each artboard's width-to-MD-width ratio to scale content correctly without distortion.</p>
-        </div>
-        <div class="feature-card">
-          <div class="card-icon icon-green">🔢</div>
-          <h3>Font Rounding</h3>
-          <p>Rounds every character's font size to a whole number and enforces per-artboard minimums.</p>
-        </div>
-        <div class="feature-card">
-          <div class="card-icon icon-blue">✏️</div>
-          <h3>Stroke Snapping</h3>
-          <p>Cleans sub-pixel stroke widths to predictable values: 0.25, 0.5, 0.75, or whole integers.</p>
-        </div>
-        <div class="feature-card">
-          <div class="card-icon icon-yellow">✂️</div>
-          <h3>Auto Artboard Crop</h3>
-          <p>Trims artboard height on all four boards to the exact content boundary — ready for export.</p>
+          <span style="color:#ccc;font-size:9.5px;text-align:center;max-width:54px;line-height:1.3">Export PNGs</span>
         </div>
       </div>
     </div>
+
+    <div class="section-label">How to launch the panel</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-icon"><svg><use href="#ic-play"/></svg></div>
+        <div class="step-body">
+          <h4>Open any Illustrator document</h4>
+          <p>The panel needs an active document to run scripts against. Open your <span class="mono">.ai</span> file before launching the Smart App.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Launch via File → Scripts → AutoPerfect 2.0 → brix_smart_app</h4>
+          <p>This is the <strong>only time</strong> you need to use the File menu. The Smart App panel opens as a floating window over Illustrator and stays open until you close it.</p>
+          <div class="path-block">File <span class="sep">›</span> Scripts <span class="sep">›</span> AutoPerfect 2.0 <span class="sep">›</span> brix_smart_app</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>The panel appears — floating over Illustrator</h4>
+          <p>A compact dark panel opens showing the Brix logo on the left and five labelled buttons on the right. It is a <strong>palette window</strong> — it stays visible while you interact with Illustrator below it.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h4>Click each button to run its script</h4>
+          <p>Each button triggers its corresponding script directly. No File menu, no searching through submenus. The panel stays open between runs so you can continue clicking through the workflow.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Button reference</div>
+    <table class="diff-table">
+      <thead><tr><th>Button Label</th><th>Script It Runs</th><th>What It Does</th></tr></thead>
+      <tbody>
+        <tr><td><span class="mono">QR</span> — Quick Renditions</td><td><span class="mono">brixSmartRenditions.jsx</span></td><td>Generates SM / L / XL from the MD master artboard</td></tr>
+        <tr><td><span class="mono">FIX</span> — Magic Fix</td><td><span class="mono">MagicFix.jsx</span></td><td>Full document cleanup — fonts, strokes, spacing, crop</td></tr>
+        <tr><td><span class="mono">QC</span> — QC Unlocked</td><td><span class="mono">brix QC Unlocked.jsx</span></td><td>Generates the HTML quality-check report</td></tr>
+        <tr><td><span class="mono">TXT</span> — Text Cleanup</td><td><span class="mono">text_cleanup.jsx</span></td><td>Normalizes tracking, kerning, scale, baseline, rotation</td></tr>
+        <tr><td><span class="mono">PNG's</span> — Export PNGs</td><td><span class="mono">exportPng.jsx</span></td><td>Exports all artboards as 300 DPI PNG24 files</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Recommended click order</div>
+    <div class="info-box">For a complete run on a fresh document, click the buttons in this order for best results:<br><br>
+    <strong style="color:var(--p700)">FIX → TXT → QR → QC → PNG's</strong><br><br>
+    This matches the recommended workflow: clean first, normalize text, generate renditions, check quality, then export.</div>
+
+    <div class="section-label">How it works technically</div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="card-icon ci-purple"><svg viewBox="0 0 24 24" fill="none" stroke="var(--p600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="3" y1="9" x2="21" y2="9"/></svg></div>
+        <h3>Palette Window</h3>
+        <p>Opens as a ScriptUI <span class="mono">palette</span> window — stays floating over Illustrator and doesn't block interaction with your artwork.</p>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon ci-green"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3>Allow-list Security</h3>
+        <p>Each button only runs scripts from an approved allow-list. Attempts to run any unlisted file are blocked with a security alert.</p>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon ci-blue"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></div>
+        <h3>BridgeTalk Fallback</h3>
+        <p>If a script can't run directly via <span class="mono">$.evalFile</span>, the panel automatically falls back to BridgeTalk to launch it — ensuring compatibility across all Illustrator versions.</p>
+      </div>
+      <div class="feature-card">
+        <div class="card-icon ci-yellow"><svg viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+        <h3>Relative Paths</h3>
+        <p>The panel finds all script files using paths relative to its own location in the <span class="mono">AutoPerfect 2.0</span> folder — no hardcoded paths, works on any machine.</p>
+      </div>
+    </div>
+
+    <div class="warn-box"><strong>Important:</strong> The Smart App panel and all five script files must remain together in the same <span class="mono">AutoPerfect 2.0</span> folder. If you move <span class="mono">brix_smart_app.jsx</span> out of the folder, it won't be able to find the other scripts.</div>
   </div>
-
-  <!-- ══════ SCRIPT 02 — MAGIC FIX ══════ -->
-  <div class="page" id="page-magicfix">
-    <div class="hero">
-      <div class="hero-eyebrow">✨ Script 02</div>
-      <h2>Magic <span class="accent">Fix</span></h2>
-      <p class="hero-desc">A comprehensive in-place cleanup script that fixes every artboard in the document — fonts, strokes, spacing, content alignment, and empty layer removal — in a single run.</p>
-    </div>
-    <div class="content">
-      <div class="tags">
-        <span class="tag tag-purple">MagicFix.jsx</span>
-        <span class="tag tag-green">All Artboards</span>
-        <span class="tag tag-blue">In-place Cleanup</span>
-        <span class="tag tag-red">No Duplication</span>
-      </div>
-
-      <div class="info-box">
-        <strong>Key difference from Smart Renditions:</strong> Magic Fix cleans and fixes all existing artboards in place. It does <em>not</em> duplicate or scale content — it is a cleanup-only tool designed to be run on any document at any stage.
-      </div>
-
-      <div class="section-label">Step-by-step process</div>
-      <div class="steps">
-        <div class="step"><div class="step-num">01</div><div class="step-body"><h4>Enable Scale Corners</h4><p>Turns on Illustrator's Scale Corners preference so rounded corners behave correctly on any resized items.</p></div></div>
-        <div class="step"><div class="step-num">02</div><div class="step-body"><h4>Global Empty Text Frame Removal</h4><p>Scans all text frames across the document. Deletes blank or whitespace-only ones. Respects locked and hidden layers.</p></div></div>
-        <div class="step"><div class="step-num">03</div><div class="step-body"><h4>Text Spacing Cleanup (Per Artboard)</h4><p>Removes consecutive double-spaces and trims leading/trailing spaces character-by-character, preserving all mixed font style runs intact.</p></div></div>
-        <div class="step"><div class="step-num">04</div><div class="step-body"><h4>Font Size Enforcement (Per Artboard)</h4><p>Rounds font sizes with a custom rule: fractions below 0.6 round down, 0.6 and above round up. Enforces minimums per artboard name. Only writes when a change is needed.</p></div></div>
-        <div class="step"><div class="step-num">05</div><div class="step-body"><h4>Stroke Width Snapping (Per Artboard)</h4><p>Snaps all stroke widths to 0.25, 0.5, 0.75, or the nearest whole number.</p></div></div>
-        <div class="step"><div class="step-num">06</div><div class="step-body"><h4>Second Empty Frame Pass</h4><p>Re-checks for text frames that became empty after the space cleanup and removes them.</p></div></div>
-        <div class="step"><div class="step-num">07</div><div class="step-body"><h4>Move Content to Top & Crop</h4><p>Shifts all content flush to the artboard top, then resizes the artboard bottom to fit the content height exactly.</p></div></div>
-        <div class="step"><div class="step-num">08</div><div class="step-body"><h4>Remove Empty Layers</h4><p>Recursively checks every layer and removes completely empty ones. Reports their names in a final alert.</p></div></div>
-      </div>
-
-      <div class="section-label">Custom rounding logic</div>
-      <table class="diff-table">
-        <thead><tr><th>Fraction</th><th>Rule</th><th>Example</th></tr></thead>
-        <tbody>
-          <tr><td>Below 0.6</td><td>Round down (floor)</td><td>11.4 → 11</td></tr>
-          <tr><td>0.6 or above</td><td>Round up (ceil)</td><td>11.7 → 12</td></tr>
-          <tr><td>Whole number</td><td>No change</td><td>12.0 → 12</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ══════ SCRIPT 03 — QC REPORT ══════ -->
-  <div class="page" id="page-qc">
-    <div class="hero">
-      <div class="hero-eyebrow">🔍 Script 03</div>
-      <h2>Brix <span class="accent">QC Report</span></h2>
-      <p class="hero-desc">Scans the entire Illustrator document and generates a detailed, styled HTML quality-check report — identifying font, spacing, stroke, swatch, and bounds issues per artboard.</p>
-    </div>
-    <div class="content">
-      <div class="tags">
-        <span class="tag tag-purple">brix_QC_Unlocked.jsx</span>
-        <span class="tag tag-blue">HTML Report</span>
-        <span class="tag tag-green">Saves to Disk</span>
-        <span class="tag tag-yellow">Read-only scan</span>
-      </div>
-
-      <div class="info-box">
-        <strong>Output:</strong> Saves a <span class="mono">DocumentName_QC_Report.html</span> next to the <span class="mono">.ai</span> file and opens it in the browser automatically. Makes <strong>no changes</strong> to the Illustrator document.
-      </div>
-
-      <div class="section-label">Issues detected</div>
-      <div class="issue-badges">
-        <div class="issue-badge"><div class="ib-icon">🔢</div><div class="ib-name">Decimal Font Sizes</div><div class="ib-desc">Font sizes not rounded to whole numbers</div></div>
-        <div class="issue-badge"><div class="ib-icon">　　</div><div class="ib-name">Double Spaces</div><div class="ib-desc">Extra spaces in text with position markers</div></div>
-        <div class="issue-badge"><div class="ib-icon">🔡</div><div class="ib-name">Small Fonts</div><div class="ib-desc">Any character below 8pt minimum</div></div>
-        <div class="issue-badge"><div class="ib-icon">✏️</div><div class="ib-name">Bad Stroke Widths</div><div class="ib-desc">Strokes not snapped to valid values</div></div>
-        <div class="issue-badge"><div class="ib-icon">📐</div><div class="ib-name">Outside Artboard</div><div class="ib-desc">Objects bleeding beyond artboard bounds</div></div>
-        <div class="issue-badge"><div class="ib-icon">🎨</div><div class="ib-name">Bad Swatch Names</div><div class="ib-desc">Auto-named swatches like "New Swatch"</div></div>
-      </div>
-
-      <div class="section-label">How it works</div>
-      <div class="steps">
-        <div class="step"><div class="step-num">01</div><div class="step-body"><h4>QC User Cache</h4><p>On first run, prompts for the reviewer's name and saves it to <span class="mono">userData/Illustrator_QC_User.txt</span>. Subsequent runs load it automatically.</p></div></div>
-        <div class="step"><div class="step-num">02</div><div class="step-body"><h4>Per-Artboard Scanning</h4><p>For each artboard, collects all text frames and path items. Checks every character's font size and spacing, and every stroke's width against the valid values list.</p></div></div>
-        <div class="step"><div class="step-num">03</div><div class="step-body"><h4>Bounds & Overflow Detection</h4><p>Uses a normalized overlap-area algorithm to assign each item to its artboard, then flags any item whose visible bounds extend beyond the artboard by more than 0.0001pt.</p></div></div>
-        <div class="step"><div class="step-num">04</div><div class="step-body"><h4>Swatch Audit</h4><p>Checks every swatch against known bad-name patterns: "New Swatch", CMYK strings like "C=0 M=0…", RGB strings, hex values, and unnamed defaults.</p></div></div>
-        <div class="step"><div class="step-num">05</div><div class="step-body"><h4>HTML Report Generation</h4><p>Builds a complete styled HTML report with a summary dashboard, per-artboard sections with badge counts, and highlights the exact word containing a bad font size in context.</p></div></div>
-      </div>
-
-      <div class="section-label">Report structure</div>
-      <div class="feature-grid">
-        <div class="feature-card"><div class="card-icon icon-purple">📊</div><h3>Summary Dashboard</h3><p>Total artboards, artboards with issues, and total swatch problems at a glance.</p></div>
-        <div class="feature-card"><div class="card-icon icon-blue">🗂️</div><h3>Per-Artboard Sections</h3><p>Each artboard with issues gets its own section with badge counts for all 5 issue types.</p></div>
-        <div class="feature-card"><div class="card-icon icon-green">🎯</div><h3>Contextual Highlights</h3><p>Double-space positions shown with character index. Bad font words highlighted in red within their full sentence.</p></div>
-        <div class="feature-card"><div class="card-icon icon-yellow">🧾</div><h3>Swatch Issues Section</h3><p>Lists all globally unnamed or auto-named swatches that need proper naming before final handoff.</p></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════ SCRIPT 04 — TEXT CLEANUP ══════ -->
-  <div class="page" id="page-text">
-    <div class="hero">
-      <div class="hero-eyebrow">🔤 Script 04</div>
-      <h2>Text <span class="accent">Normalization</span></h2>
-      <p class="hero-desc">Resets all text attributes across every text frame in the document — tracking, kerning, scale, baseline shift, and character rotation — via a quick choice dialog.</p>
-    </div>
-    <div class="content">
-      <div class="tags">
-        <span class="tag tag-purple">text_cleanup.jsx</span>
-        <span class="tag tag-green">Quick Dialog</span>
-        <span class="tag tag-blue">Style Preservation</span>
-        <span class="tag tag-yellow">Character-level</span>
-      </div>
-
-      <div class="info-box">
-        <strong>How to use:</strong> Run the script — a dialog appears asking you to choose a tracking value. Click your option and the script processes all text frames and shows a summary alert.
-      </div>
-
-      <div class="section-label">Tracking options</div>
-      <table class="diff-table">
-        <thead><tr><th>Button</th><th>Tracking Value</th><th>Use Case</th></tr></thead>
-        <tbody>
-          <tr><td>Set Tracking 0</td><td>0</td><td>Standard reset to default</td></tr>
-          <tr><td>Set Tracking -10</td><td>-10</td><td>Slightly tighter for medium sizes</td></tr>
-          <tr><td>Set Tracking -25</td><td>-25</td><td>Tight tracking for large display text</td></tr>
-        </tbody>
-      </table>
-
-      <div class="section-label">What gets reset</div>
-      <div class="feature-grid">
-        <div class="feature-card"><div class="card-icon icon-purple">↔️</div><h3>Tracking</h3><p>Sets letter-spacing to your chosen value (0, -10, or -25) on every character individually.</p></div>
-        <div class="feature-card"><div class="card-icon icon-green">📏</div><h3>Scale Reset</h3><p>Both horizontal and vertical character scale are restored to exactly <strong>100%</strong>.</p></div>
-        <div class="feature-card"><div class="card-icon icon-blue">⬆️</div><h3>Baseline Shift</h3><p>Any baseline offset is zeroed out across all characters.</p></div>
-        <div class="feature-card"><div class="card-icon icon-yellow">🔄</div><h3>Character Rotation</h3><p>Individual character rotation is reset to 0° — removes any per-character tilt applied manually.</p></div>
-        <div class="feature-card"><div class="card-icon icon-pink">🔡</div><h3>Kerning → Auto</h3><p>Forces kerning method to <span class="mono">AutoKernType.AUTO</span>, removing all manual or optical overrides.</p></div>
-      </div>
-
-      <div class="section-label">Important notes</div>
-      <ul class="check-list">
-        <li>Processes every text frame on every layer — no per-artboard or per-layer filter.</li>
-        <li>Font size, font family, color, and weight are <strong>not</strong> touched — only the 5 attributes listed above.</li>
-        <li>Mixed-style runs are preserved because the script operates character-by-character.</li>
-        <li>Performs two redraws before and after to ensure Illustrator commits all changes visually.</li>
-        <li>Executes an undo step on load as a hard state reset to avoid Illustrator state conflicts.</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- ══════ SCRIPT 05 — EXPORT PNG ══════ -->
-  <div class="page" id="page-export">
-    <div class="hero">
-      <div class="hero-eyebrow">📤 Script 05</div>
-      <h2>Export <span class="accent">PNG</span></h2>
-      <p class="hero-desc">Cleans up empty layers and artboards, then exports every remaining artboard as a transparent 300 DPI PNG24 file — named, saved, and done in one click.</p>
-    </div>
-    <div class="content">
-      <div class="tags">
-        <span class="tag tag-purple">exportPng.jsx</span>
-        <span class="tag tag-green">300 DPI</span>
-        <span class="tag tag-blue">PNG24 Transparent</span>
-        <span class="tag tag-yellow">Auto-named</span>
-      </div>
-
-      <div class="info-box">
-        <strong>Requirement:</strong> The document must be saved before running — the script uses the document's save location as the export destination.
-      </div>
-
-      <div class="section-label">Export process</div>
-      <div class="steps">
-        <div class="step"><div class="step-num">01</div><div class="step-body"><h4>Confirm Dialog</h4><p>Asks "Deleting empty Layers and Artboards. Confirm?" before making any changes. Cancelling exits cleanly.</p></div></div>
-        <div class="step"><div class="step-num">02</div><div class="step-body"><h4>Delete Empty Layers</h4><p>Recursively removes all layers and sub-layers with no page items. Skips locked or hidden layers.</p></div></div>
-        <div class="step"><div class="step-num">03</div><div class="step-body"><h4>Delete Empty Artboards</h4><p>Checks each artboard for visible content overlap. Any artboard with no overlapping items is removed.</p></div></div>
-        <div class="step"><div class="step-num">04</div><div class="step-body"><h4>Export Each Artboard as PNG</h4><p>Sets the active artboard, constructs the filename, and exports using PNG24 with artboard clipping, transparency, and anti-aliasing.</p></div></div>
-        <div class="step"><div class="step-num">05</div><div class="step-body"><h4>File Naming</h4><p>Single artboard: <span class="mono">DocumentName.png</span>. Multiple artboards: <span class="mono">DocumentName ArtboardName.png</span>. Default artboard names containing "Artboard" are omitted.</p></div></div>
-        <div class="step"><div class="step-num">06</div><div class="step-body"><h4>Save & Report</h4><p>Saves the Illustrator document after export. Shows a completion alert or lists any artboards that failed.</p></div></div>
-      </div>
-
-      <div class="section-label">Export settings</div>
-      <table class="diff-table">
-        <thead><tr><th>Setting</th><th>Value</th></tr></thead>
-        <tbody>
-          <tr><td>Format</td><td>PNG24</td></tr>
-          <tr><td>Resolution</td><td>300 DPI (417% scale from 72 DPI)</td></tr>
-          <tr><td>Transparency</td><td>Enabled</td></tr>
-          <tr><td>Anti-aliasing</td><td>Enabled</td></tr>
-          <tr><td>Artboard clipping</td><td>Enabled</td></tr>
-          <tr><td>Save location</td><td>Same folder as the .ai document</td></tr>
-        </tbody>
-      </table>
-
-      <div class="info-box">
-        <strong>Technical note:</strong> This script uses <strong>BridgeTalk</strong> to send the export payload back to Illustrator as a separate invocation — this avoids ExtendScript re-entrancy issues that can cause silent failures when exporting multiple artboards.
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════ GITHUB SETUP ══════ -->
-  <div class="page" id="page-github">
-    <div class="hero">
-      <div class="hero-eyebrow">📁 Hosting Guide</div>
-      <h2>GitHub <span class="accent">Repository Setup</span></h2>
-      <p class="hero-desc">How to host this documentation on GitHub Pages and ensure the download button works correctly for every visitor.</p>
-    </div>
-    <div class="content">
-
-      <div class="section-label">Repository file structure</div>
-      <div class="info-box" style="margin-bottom:28px">
-        <strong>Place the ZIP file in the same folder as this HTML file.</strong> The download button uses a relative path — <span class="mono">AutoPerfect_2_0.zip</span> — so both files must live in the same directory.
-      </div>
-
-      <table class="diff-table" style="margin-bottom:36px">
-        <thead><tr><th>File</th><th>Location in repo</th><th>Notes</th></tr></thead>
-        <tbody>
-          <tr><td><span class="mono">index.html</span> <em>(rename this file)</em></td><td><span class="mono">/</span> (root)</td><td>Rename <span class="mono">AutoPerfect_Docs_Light.html</span> to <span class="mono">index.html</span></td></tr>
-          <tr><td><span class="mono">AutoPerfect_2_0.zip</span></td><td><span class="mono">/</span> (root, same folder)</td><td>Must be in the same directory as index.html</td></tr>
-        </tbody>
-      </table>
-
-      <div class="section-label">Step-by-step GitHub Pages setup</div>
-
-      <div class="github-callout">
-        <h3>📋 Complete Setup Instructions</h3>
-        <ol>
-          <li><strong>Create a new GitHub repository</strong> — go to github.com → New Repository. Name it anything, e.g. <span class="path-pill">autoperfect-docs</span>. Set it to Public.</li>
-          <li><strong>Rename this HTML file to <span class="path-pill">index.html</span></strong> — GitHub Pages serves <span class="path-pill">index.html</span> as the homepage automatically.</li>
-          <li><strong>Upload both files to the repository root</strong> — click <em>Add file → Upload files</em> and drag in:
-            <ul style="margin-top:8px;margin-left:20px;display:flex;flex-direction:column;gap:4px">
-              <li style="font-size:13.5px;color:#14532d">📄 <span class="path-pill">index.html</span></li>
-              <li style="font-size:13.5px;color:#14532d">📦 <span class="path-pill">AutoPerfect_2_0.zip</span></li>
-            </ul>
-          </li>
-          <li><strong>Enable GitHub Pages</strong> — go to your repo → <em>Settings → Pages</em> → under Source, select <em>Deploy from a branch</em> → choose <span class="path-pill">main</span> branch → folder <span class="path-pill">/ (root)</span> → click Save.</li>
-          <li><strong>Wait ~1 minute</strong> then visit <span class="path-pill">https://yourusername.github.io/autoperfect-docs/</span> — your site is live.</li>
-          <li><strong>Test the download button</strong> — click "Download All Scripts" in the sidebar. The browser should download <span class="path-pill">AutoPerfect_2_0.zip</span> directly.</li>
-        </ol>
-        <div class="note">
-          ✅ <strong>Why this works:</strong> The download button uses <span class="path-pill">href="AutoPerfect_2_0.zip" download="AutoPerfect_2_0.zip"</span> — a relative path. Since both files sit in the same root directory, GitHub Pages resolves the ZIP correctly and the <span class="path-pill">download</span> attribute forces the browser to download rather than open it.
-        </div>
-      </div>
-
-      <div class="section-label">What NOT to do</div>
-      <ul class="check-list" style="margin-bottom:32px">
-        <li>Do not put the ZIP in a subfolder like <span class="mono">/assets/</span> unless you update the href in the download button to match.</li>
-        <li>Do not use a private repository — GitHub Pages requires a public repo on the free plan.</li>
-        <li>Do not rename the ZIP file without also updating the <span class="mono">href</span> and <span class="mono">download</span> attributes in the sidebar footer button.</li>
-        <li>Do not use GitHub's web editor to rename index.html — it's safer to rename it locally first then upload.</li>
-      </ul>
-
-      <div class="section-label">Updating scripts later</div>
-      <div class="feature-grid">
-        <div class="feature-card">
-          <div class="card-icon icon-green">🔄</div>
-          <h3>Replace the ZIP</h3>
-          <p>Upload a new <span class="mono">AutoPerfect_2_0.zip</span> to the repo root. GitHub Pages serves the latest commit — no URL changes needed.</p>
-        </div>
-        <div class="feature-card">
-          <div class="card-icon icon-blue">📝</div>
-          <h3>Update the HTML</h3>
-          <p>Edit <span class="mono">index.html</span> in GitHub's web editor or push an updated file. Changes go live in ~30 seconds.</p>
-        </div>
-        <div class="feature-card">
-          <div class="card-icon icon-purple">🔗</div>
-          <h3>Share the Link</h3>
-          <p>Your permanent URL is <span class="mono">https://yourusername.github.io/repo-name/</span> — share it with your team directly.</p>
-        </div>
-      </div>
-    </div>
-  </div>
+</div>
 
 </main>
 
 <script>
-  var pageMap = { brix:'brix', magicfix:'magicfix', qc:'qc', text:'text', export:'export', github:'github', home:'home' };
-
-  function getNav(id) {
-    var items = document.querySelectorAll('.nav-item');
-    for (var i = 0; i < items.length; i++) {
-      var onclick = items[i].getAttribute('onclick') || '';
-      if (onclick.indexOf("'" + id + "'") !== -1) return items[i];
-    }
-    return null;
+function getNav(id){
+  var items=document.querySelectorAll('.nav-item');
+  for(var i=0;i<items.length;i++){
+    var oc=items[i].getAttribute('onclick')||'';
+    if(oc.indexOf("'"+id+"'")!==-1) return items[i];
   }
-
-  function showPage(id, navEl) {
-    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-    document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
-    var pg = document.getElementById('page-' + id);
-    if (pg) pg.classList.add('active');
-    if (navEl) navEl.classList.add('active');
-    window.scrollTo(0, 0);
-  }
-
-  window.addEventListener('scroll', function() {
-    var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
-    var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    var pct = height > 0 ? (winScroll / height) * 100 : 0;
-    document.getElementById('progressBar').style.width = pct + '%';
-  });
+  return null;
+}function showPage(id,navEl){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
+  document.querySelectorAll('.nav-item').forEach(function(n){n.classList.remove('active')});
+  var pg=document.getElementById('page-'+id);
+  if(pg) pg.classList.add('active');
+  if(navEl) navEl.classList.add('active');
+  window.scrollTo(0,0);
+}
+function switchOS(os,el){
+  document.querySelectorAll('.os-tab').forEach(function(t){t.classList.remove('active')});
+  document.querySelectorAll('.os-content').forEach(function(c){c.classList.remove('active')});
+  el.classList.add('active');
+  var c=document.getElementById('os-'+os);
+  if(c) c.classList.add('active');
+}
+window.addEventListener('scroll',function(){
+  var s=document.documentElement.scrollTop||document.body.scrollTop;
+  var h=document.documentElement.scrollHeight-document.documentElement.clientHeight;
+  document.getElementById('progressBar').style.width=(h>0?(s/h)*100:0)+'%';
+});
 </script>
 </body>
 </html>
